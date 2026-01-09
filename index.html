@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS OS | Aurora Full Tier Edition</title>
+    <title>Prism Manager | Tier update</title>
     
     <!-- 1. TAILWIND CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -493,7 +493,7 @@
                             <div>
                                 <h2 className="text-xs font-mono text-indigo-400 tracking-[0.4em] mb-3 flex items-center gap-3 font-bold">
                                     <span className={`w-2 h-2 rounded-full ${energy > 0 ? 'bg-green-500 animate-pulse shadow-[0_0_10px_#22c55e]' : 'bg-red-500'}`}></span>
-                                    NEXUS_OS_V7.1
+                                    PRISM_MANAGER_V7.1
                                 </h2>
                                 <h1 className="text-7xl md:text-9xl font-black text-white tracking-tighter drop-shadow-2xl leading-none mb-2">
                                     {time.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}
@@ -595,7 +595,7 @@
 
         // --- NEURAL VAULT ---
         const NeuralVault = () => {
-            const [note, setNote] = useLocalStorage('nexus_notes', 'Stardate 2026.01.07\n\nDeep thoughts only.\n');
+            const [note, setNote] = useLocalStorage('prism_notes', 'Stardate 2026.01.07\n\nDeep thoughts only.\n');
             return (
                 <div className="h-full flex flex-col animate-fade-in pb-20 relative z-10">
                     <h2 className="text-5xl font-black text-white mb-8 flex gap-4 tracking-tighter drop-shadow-lg"><Icons.Book className="text-purple-400" size={48}/> NEURAL VAULT</h2>
@@ -610,8 +610,8 @@
         // --- MAIN CONTROLLER ---
         const NexusOS = () => {
             const [activeTab, setActiveTab] = useState('dashboard');
-            const [users, setUsers] = useLocalStorage('nexus_loyalty', [{ id: 1, name: 'Main Character', points: 420 }]);
-            const [tasks, setTasks] = useLocalStorage('nexus_quests', []);
+            const [users, setUsers] = useLocalStorage('prism_loyalty', [{ id: 1, name: 'Main Character', points: 420 }]);
+            const [tasks, setTasks] = useLocalStorage('prism_quests', []);
             const [energy, setEnergy] = useState(100);
             const [cinematicData, setCinematicData] = useState(null);
             const prevRanksRef = useRef({});
