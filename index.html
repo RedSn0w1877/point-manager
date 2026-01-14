@@ -43,6 +43,20 @@
             100% { transform: scale(1); background-color: transparent; }
         }
         
+        @keyframes disaster-strike {
+            0% { transform: scale(1); filter: grayscale(0); }
+            10% { transform: translate(-5px, 5px); }
+            20% { transform: translate(5px, -5px); filter: grayscale(1) drop-shadow(0 0 10px red); }
+            30% { transform: translate(-5px, 5px); }
+            40% { transform: translate(5px, -5px); }
+            100% { transform: scale(1); filter: grayscale(0); }
+        }
+
+        @keyframes pulse-red {
+            0%, 100% { box-shadow: 0 0 0 rgba(239, 68, 68, 0); }
+            50% { box-shadow: 0 0 30px rgba(239, 68, 68, 0.5); }
+        }
+        
         @keyframes strike-through {
             0% { width: 0; }
             100% { width: 100%; }
@@ -171,6 +185,8 @@
         .screen-shake { animation: shake 0.5s ease-in-out; }
         .debris { animation: debris-fly 1s ease-out forwards; }
         .rotator { animation: spin-slow 20s linear infinite; }
+        .deadly-reset { animation: disaster-strike 0.5s ease-in-out; }
+        .sabotage-overlay { background: radial-gradient(circle, rgba(239,68,68,0.2) 0%, rgba(0,0,0,0.9) 100%); }
     </style>
 </head>
 <body>
@@ -226,15 +242,21 @@
             FourStar: createIcon(["M12 2 L14.5 9.5 L22 12 L14.5 14.5 L12 22 L9.5 14.5 L2 12 L9.5 9.5 Z"]), 
             Sword: createIcon(["M14.5 17.5L3 6V3h3l11.5 11.5", "M13 19l6-6 5 5v3h-3l-8-2"]),
             Hexagon: createIcon(["M21 16V8l-9-5-9 5v8l9 5 9-5z"]),
-            Dices: createIcon(["M4 8V6a2 2 0 0 1 2-2h2", "M4 16v2a2 2 0 0 0 2 2h2", "M16 4h2a2 2 0 0 1 2 2v2", "M16 20h2a2 2 0 0 0 2-2v-2", "M10 10h4v4h-4z"]), // Dice icon
+            Dices: createIcon(["M4 8V6a2 2 0 0 1 2-2h2", "M4 16v2a2 2 0 0 0 2 2h2", "M16 4h2a2 2 0 0 1 2 2v2", "M16 20h2a2 2 0 0 0 2-2v-2", "M10 10h4v4h-4z"]), 
             ToggleLeft: createIcon(["M16 6H8a6 6 0 1 0 0 12h8a6 6 0 0 0 0-12z", "M8 14a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"]),
-            ToggleRight: createIcon(["M16 6H8a6 6 0 1 0 0 12h8a6 6 0 0 0 0-12z", "M16 14a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"])
+            ToggleRight: createIcon(["M16 6H8a6 6 0 1 0 0 12h8a6 6 0 0 0 0-12z", "M16 14a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"]),
+            Lock: createIcon(["M12 15v2m-6 4h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2zm10-10V7a4 4 0 0 0-8 0v4h8z"]),
+            Settings: createIcon(["M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.74v-.47a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z", "M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0-6 0"]),
+            Skull: createIcon(["M12 18.5a6.38 6.38 0 0 0 3.85-1.24 6.52 6.52 0 0 0 2.65-5.26 6.5 6.5 0 1 0-13 0 6.52 6.52 0 0 0 2.65 5.26A6.38 6.38 0 0 0 12 18.5Z", "m16 22-2-4", "m8 22 2-4", "m9 22 6-4", "m15 22-6-4"]),
+            ChevronsUp: createIcon(["M17 11l-5-5-5 5", "M17 18l-5-5-5 5"]),
+            ChevronsDown: createIcon(["M7 13l5 5 5-5", "M7 6l5 5 5-5"])
         };
 
         const { 
             PrismLogo, LayoutDashboard, Trophy, CheckSquare, Book, Plus, Minus, 
             User, Trash2, Zap, Flame, Target, Cpu, Info, X, Rocket,
-            Crown, Wallet, Shield, Star, Gem, FourStar, Sword, Hexagon, Ghost, Dices, ToggleLeft, ToggleRight
+            Crown, Wallet, Shield, Star, Gem, FourStar, Sword, Hexagon, Ghost, Dices, ToggleLeft, ToggleRight,
+            Lock, Settings, Skull, ChevronsUp, ChevronsDown
         } = Icons;
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'prism-manager-elite';
@@ -257,8 +279,7 @@
             { name: 'Diamond', min: 8600, max: 1000000, value: '∞', color: '#e0f2fe', icon: FourStar }
         ];
 
-        // --- GAMBLING REWARDS CONFIG (Rebalanced Weights - Higher Weight = More Common) ---
-        // Weights are relative. Total weight is approx 6000.
+        // --- GAMBLING REWARDS CONFIG ---
         const GAMBLE_REWARDS = [
             { points: 1000, weight: 1, chanceLabel: '0.02%', color: '#e0f2fe' },
             { points: 500, weight: 5, chanceLabel: '0.1%', color: '#f43f5e' },
@@ -270,8 +291,15 @@
             { points: 10, weight: 800, chanceLabel: '15%', color: '#818cf8' },
             { points: 5, weight: 1200, chanceLabel: '20%', color: '#22d3ee' },
             { points: 2, weight: 1500, chanceLabel: '25%', color: '#94a3b8' },
-            { points: 1, weight: 1800, chanceLabel: '30%', color: '#cd7f32' }
+            { points: 1, weight: 1800, chanceLabel: '30%', color: '#cd7f32' },
+            { isDeadly: true, weight: 30, chanceLabel: '0.5%', color: '#ff0000', name: "DEADLY RESET" } // 0.5% approx relative to total ~6000
         ];
+
+        const BOOSTERS = {
+            '2X': { id: '2X', name: '2x Boost', multiplier: 2, color: '#fbbf24', icon: ChevronsUp },
+            '4X': { id: '4X', name: '4x Boost', multiplier: 4, color: '#f43f5e', icon: ChevronsUp },
+            'HALF': { id: 'HALF', name: '50% Sabotage', multiplier: 0.5, color: '#94a3b8', icon: ChevronsDown }
+        };
 
         // --- COMPONENTS ---
 
@@ -444,6 +472,8 @@
                 }
             };
 
+            const userBoosts = user.boosters || [];
+
             return (
                 <div className="glass-card p-6 rounded-3xl relative overflow-hidden group border-l-4" style={{ borderLeftColor: tier.color }}>
                     <div className={`absolute -top-4 -right-4 p-6 opacity-10 group-hover:opacity-30 group-hover:scale-110 transition-all duration-500 blur-[2px] rotator`} style={{ color: tier.color }}>
@@ -454,10 +484,18 @@
                         <div className="flex justify-between items-start mb-6">
                             <div>
                                 <h3 className="text-2xl font-black text-white mb-1 tracking-tight">{user.name}</h3>
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-2 flex-wrap">
                                     <span className="text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded bg-white/10 border border-white/5 backdrop-blur-md" style={{ color: tier.color, borderColor: tier.color }}>
                                         {tier.name}
                                     </span>
+                                    {userBoosts.map(bid => {
+                                        const b = BOOSTERS[bid];
+                                        return b ? (
+                                            <span key={bid} className="text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded bg-white/10 border border-white/5 backdrop-blur-md flex items-center gap-1" style={{ color: b.color, borderColor: b.color }}>
+                                                <b.icon size={10} /> {b.name}
+                                            </span>
+                                        ) : null;
+                                    })}
                                 </div>
                             </div>
                             <button onClick={() => onUpdatePoints(user.id, 'DELETE')} className="text-slate-600 hover:text-red-500 transition-colors bg-black/40 hover:bg-black/60 p-2 rounded-xl border border-white/5"><Trash2 size={16} /></button>
@@ -513,9 +551,9 @@
 
         const App = () => {
             const [view, setView] = useState('dash');
-            const [users, setUsers] = useState(() => JSON.parse(localStorage.getItem('prism_v4_users')) || [{ id: 1, name: 'Hoa', points: 0 }]);
-            const [tasks, setTasks] = useState(() => JSON.parse(localStorage.getItem('prism_v4_tasks')) || []);
-            const [journal, setJournal] = useState(() => localStorage.getItem('prism_v4_journal') || '');
+            const [users, setUsers] = useState(() => JSON.parse(localStorage.getItem('prism_v5_users')) || [{ id: 1, name: 'Director Hoa', points: 0, boosters: [] }]);
+            const [tasks, setTasks] = useState(() => JSON.parse(localStorage.getItem('prism_v5_tasks')) || []);
+            const [journal, setJournal] = useState(() => localStorage.getItem('prism_v5_journal') || '');
             const [rankUpData, setRankUpData] = useState(null);
             const [showLegend, setShowLegend] = useState(false);
             const [energy, setEnergy] = useState(100);
@@ -528,49 +566,102 @@
             const [isSpinning, setIsSpinning] = useState(false);
             const [selectedGambler, setSelectedGambler] = useState('');
 
-            // Save users, tasks, journal
-            useEffect(() => localStorage.setItem('prism_v4_users', JSON.stringify(users)), [users]);
-            useEffect(() => localStorage.setItem('prism_v4_tasks', JSON.stringify(tasks)), [tasks]);
-            useEffect(() => localStorage.setItem('prism_v4_journal', journal), [journal]);
+            // Admin State
+            const [adminUnlocked, setAdminUnlocked] = useState(false);
+            const [adminPass, setAdminPass] = useState('');
+            const [sabotageMode, setSabotageMode] = useState(null); // { amount: 50, sourceUser: 'Director' }
+
+            const prevRanks = useRef({});
+
+            useEffect(() => {
+                localStorage.setItem('prism_v5_users', JSON.stringify(users));
+                users.forEach(u => {
+                    const currentTier = TIERS.find(t => u.points >= t.min && u.points < t.max) || TIERS[TIERS.length - 1];
+                    const prevRankName = prevRanks.current[u.id];
+                    
+                    // Only animate if WE (admin) manually caused it via updatePoints with showAnimation=true
+                    // This effect just syncs refs, the actual trigger is in updatePoints
+                    prevRanks.current[u.id] = currentTier.name;
+                });
+            }, [users]);
+
+            useEffect(() => localStorage.setItem('prism_v5_tasks', JSON.stringify(tasks)), [tasks]);
+            useEffect(() => localStorage.setItem('prism_v5_journal', journal), [journal]);
             useEffect(() => {
                 const i = setInterval(() => setEnergy(p => p > 90 ? 100 : p + 0.1), 1000);
                 return () => clearInterval(i);
             }, []);
 
-            // Core Logic for adding points and handling Rank Ups
             const updatePoints = (uid, amountOrAction, showAnimation = false) => {
                 if (amountOrAction === 'DELETE') {
                     setUsers(prev => prev.filter(u => u.id !== uid));
                     return;
                 }
 
-                const amt = Number(amountOrAction);
+                // If setting directly (e.g. reset), treat as is.
+                if (amountOrAction === 'RESET') {
+                     setUsers(prev => prev.map(u => u.id === uid ? { ...u, points: 0 } : u));
+                     return;
+                }
+
+                let amt = Number(amountOrAction);
+                
                 setUsers(prevUsers => {
-                    return prevUsers.map(u => {
-                        if (u.id === uid) {
-                            const oldPoints = u.points;
-                            const newPoints = Math.max(0, oldPoints + amt);
-                            
-                            // Check for Rank Up ONLY if animation is requested
-                            if (showAnimation && newPoints > oldPoints) {
-                                const oldTier = TIERS.find(t => oldPoints >= t.min && oldPoints < t.max) || TIERS[TIERS.length - 1];
-                                const newTier = TIERS.find(t => newPoints >= t.min && newPoints < t.max) || TIERS[TIERS.length - 1];
-                                
-                                // Only trigger if index increased
-                                if (TIERS.indexOf(newTier) > TIERS.indexOf(oldTier)) {
-                                    setRankUpData({ newTier, oldTier });
-                                }
-                            }
-                            return { ...u, points: newPoints };
+                    const user = prevUsers.find(u => u.id === uid);
+                    if (!user) return prevUsers;
+
+                    // Apply Boosters if adding positive points
+                    if (amt > 0) {
+                        const boosters = user.boosters || [];
+                        let multiplier = 1;
+                        if (boosters.includes('2X')) multiplier *= 2;
+                        if (boosters.includes('4X')) multiplier *= 4;
+                        if (boosters.includes('HALF')) multiplier *= 0.5;
+                        amt = Math.floor(amt * multiplier);
+                    }
+
+                    const oldPoints = user.points;
+                    const newPoints = Math.max(0, oldPoints + amt);
+                    
+                    // Check Rank Up logic (Only if animation allowed AND points increased)
+                    if (showAnimation && newPoints > oldPoints) {
+                        const oldTier = TIERS.find(t => oldPoints >= t.min && oldPoints < t.max) || TIERS[TIERS.length - 1];
+                        const newTier = TIERS.find(t => newPoints >= t.min && newPoints < t.max) || TIERS[TIERS.length - 1];
+                        
+                        if (TIERS.indexOf(newTier) > TIERS.indexOf(oldTier)) {
+                            setRankUpData({ newTier, oldTier });
                         }
-                        return u;
-                    });
+                    }
+
+                    return prevUsers.map(u => u.id === uid ? { ...u, points: newPoints } : u);
                 });
+            };
+
+            const toggleBooster = (uid, boosterId) => {
+                setUsers(prev => prev.map(u => {
+                    if (u.id === uid) {
+                        const current = u.boosters || [];
+                        const exists = current.includes(boosterId);
+                        let newBoosters = exists ? current.filter(b => b !== boosterId) : [...current, boosterId];
+                        
+                        // Enforce logic: can't have 2x and 4x same time usually, but let's allow overlapping chaos for fun unless requested otherwise.
+                        // Or maybe simplistic: toggle.
+                        return { ...u, boosters: newBoosters };
+                    }
+                    return u;
+                }));
+            };
+
+            const handleSabotage = (targetId) => {
+                if (!sabotageMode) return;
+                updatePoints(targetId, -sabotageMode.amount, false); // Sabotage is silent ranking wise
+                setSabotageMode(null);
+                alert(`Sabotage successful! ${sabotageMode.amount} points removed.`);
             };
 
             const handleAddUser = () => {
                 if (!newUserName.trim()) return;
-                setUsers([...users, { id: Date.now(), name: newUserName, points: 0 }]);
+                setUsers([...users, { id: Date.now(), name: newUserName, points: 0, boosters: [] }]);
                 setNewUserName('');
             };
 
@@ -584,7 +675,6 @@
                 setTimeout(() => {
                     setTasks(prev => prev.map(t => {
                         if (t.id === tid && !t.done) {
-                            // No animation for quest completion
                             updatePoints(t.uid, t.reward, false); 
                             return { ...t, done: true };
                         }
@@ -611,10 +701,8 @@
                 setIsSpinning(true);
                 setSpinResult(null);
                 
-                // Deduct cost immediately (No animation)
-                updatePoints(user.id, -cost, false);
+                updatePoints(user.id, -cost, false); // Pay entry fee
 
-                // Simulate spin delay
                 setTimeout(() => {
                     const totalWeight = GAMBLE_REWARDS.reduce((acc, item) => acc + item.weight, 0);
                     let random = Math.random() * totalWeight;
@@ -628,8 +716,13 @@
                         random -= item.weight;
                     }
 
-                    // Add winnings (No animation)
-                    updatePoints(user.id, wonItem.points, false);
+                    if (wonItem.isDeadly) {
+                        updatePoints(user.id, 'RESET', false);
+                    } else {
+                        // Boosters apply inside updatePoints
+                        updatePoints(user.id, wonItem.points, false);
+                    }
+                    
                     setSpinResult(wonItem);
                     setIsSpinning(false);
                 }, 1500);
@@ -638,6 +731,30 @@
             return (
                 <div className="flex h-screen w-full bg-[#050508] text-slate-200 font-sans relative overflow-hidden">
                     <Starfield />
+
+                    {/* SABOTAGE MODAL OVERLAY */}
+                    {sabotageMode && (
+                        <div className="fixed inset-0 z-[150] flex items-center justify-center sabotage-overlay animate-in fade-in duration-300">
+                            <div className="glass-card p-8 border-red-500/50 shadow-[0_0_50px_rgba(220,38,38,0.5)] text-center max-w-lg w-full relative overflow-hidden">
+                                <div className="absolute inset-0 bg-red-500/10 animate-[pulse-red_1s_infinite]"></div>
+                                <h2 className="text-3xl font-black text-red-500 mb-2 relative z-10 tracking-widest">TACTICAL NUKE READY</h2>
+                                <p className="text-white mb-6 relative z-10">Select a target to destroy {sabotageMode.amount} points.</p>
+                                <div className="grid grid-cols-2 gap-4 relative z-10">
+                                    {users.map(u => (
+                                        <button 
+                                            key={u.id}
+                                            onClick={() => handleSabotage(u.id)}
+                                            className="bg-black/60 hover:bg-red-500/40 border border-red-500/30 p-4 rounded-xl transition-all hover:scale-105 active:scale-95 group"
+                                        >
+                                            <span className="font-bold text-white group-hover:text-red-200">{u.name}</span>
+                                            <span className="block text-xs text-slate-400 group-hover:text-red-300">{u.points.toLocaleString()} pts</span>
+                                        </button>
+                                    ))}
+                                </div>
+                                <button onClick={() => setSabotageMode(null)} className="mt-6 text-xs text-slate-500 hover:text-white underline relative z-10">ABORT MISSION</button>
+                            </div>
+                        </div>
+                    )}
 
                     <nav className="w-20 md:w-72 border-r border-white/5 flex flex-col items-center md:items-stretch p-6 z-20 bg-[#0a0a0f]/60 backdrop-blur-2xl">
                         <div className="flex items-center gap-4 mb-12 px-2 mt-2 group cursor-pointer">
@@ -656,6 +773,7 @@
                                 { id: 'users', label: 'Squad', icon: User },
                                 { id: 'quests', label: 'Missions', icon: CheckSquare },
                                 { id: 'gamble', label: 'Gambling', icon: Dices },
+                                { id: 'admin', label: 'Classified', icon: Lock },
                                 { id: 'journal', label: 'Database', icon: Book }
                             ].map(item => (
                                 <button 
@@ -688,7 +806,7 @@
                                     <div className="flex flex-col md:flex-row justify-between items-end gap-6">
                                         <div>
                                             <h1 className="text-6xl font-black text-white mb-2 tracking-tighter drop-shadow-[0_0_25px_rgba(255,255,255,0.2)]">
-                                                Welcome, <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">Hoa.</span>
+                                                Welcome, <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">Director Hoa.</span>
                                             </h1>
                                             <p className="text-slate-400 font-medium text-lg">Prism protocols initialized. Ready for command.</p>
                                         </div>
@@ -722,6 +840,74 @@
                                             <p className="text-4xl font-black text-white mt-2 group-hover:translate-x-2 transition-transform">{tasks.filter(t => !t.done).length}</p>
                                         </div>
                                     </div>
+                                </div>
+                            )}
+
+                            {view === 'admin' && (
+                                <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
+                                    <div className="border-b border-white/10 pb-8 flex justify-between items-center">
+                                        <div>
+                                            <h2 className="text-4xl font-black text-white tracking-tighter flex items-center gap-3">
+                                                <Lock size={32} className="text-red-500" />
+                                                RESTRICTED AREA
+                                            </h2>
+                                            <p className="text-sm text-slate-400 mt-2 font-medium">Director Level Clearance Only</p>
+                                        </div>
+                                    </div>
+
+                                    {!adminUnlocked ? (
+                                        <div className="flex flex-col items-center justify-center min-h-[400px]">
+                                            <div className="w-full max-w-md space-y-4 text-center">
+                                                <input 
+                                                    type="password"
+                                                    value={adminPass}
+                                                    onChange={(e) => setAdminPass(e.target.value)}
+                                                    placeholder="ENTER PASSCODE"
+                                                    className="w-full bg-black/60 border border-red-500/30 rounded-xl px-6 py-4 text-center text-white text-xl tracking-[0.5em] outline-none focus:border-red-500 focus:shadow-[0_0_20px_rgba(239,68,68,0.3)] transition-all font-black placeholder-slate-700"
+                                                />
+                                                <button 
+                                                    onClick={() => {
+                                                        if (adminPass === 'hehehehoa') setAdminUnlocked(true);
+                                                        else alert("ACCESS DENIED");
+                                                    }}
+                                                    className="w-full py-4 bg-red-600 hover:bg-red-500 text-white font-black rounded-xl shadow-[0_0_20px_rgba(220,38,38,0.4)] transition-all"
+                                                >
+                                                    AUTHENTICATE
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="grid grid-cols-1 gap-6">
+                                            {users.map(u => (
+                                                <div key={u.id} className="glass-card p-6 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-6 border-white/5">
+                                                    <div className="flex items-center gap-4">
+                                                        <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-white font-black">{u.name.charAt(0)}</div>
+                                                        <div>
+                                                            <h3 className="text-xl font-bold text-white">{u.name}</h3>
+                                                            <div className="flex gap-2 mt-1">
+                                                                {u.boosters?.map(b => (
+                                                                    <span key={b} onClick={() => toggleBooster(u.id, b)} className="cursor-pointer bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-[10px] font-bold text-white hover:bg-red-900 hover:border-red-500 transition-colors flex items-center gap-1 group">
+                                                                        {BOOSTERS[b].name} <X size={8} className="group-hover:block hidden" />
+                                                                    </span>
+                                                                ))}
+                                                                {(!u.boosters || u.boosters.length === 0) && <span className="text-[10px] text-slate-600 italic">No active boosts</span>}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 w-full md:w-auto">
+                                                        <button onClick={() => toggleBooster(u.id, '2X')} className="px-3 py-2 bg-yellow-500/10 border border-yellow-500/30 text-yellow-500 text-xs font-bold rounded-lg hover:bg-yellow-500/20 transition-all">Grant 2x</button>
+                                                        <button onClick={() => toggleBooster(u.id, '4X')} className="px-3 py-2 bg-pink-500/10 border border-pink-500/30 text-pink-500 text-xs font-bold rounded-lg hover:bg-pink-500/20 transition-all">Grant 4x</button>
+                                                        <button onClick={() => toggleBooster(u.id, 'HALF')} className="px-3 py-2 bg-slate-500/10 border border-slate-500/30 text-slate-400 text-xs font-bold rounded-lg hover:bg-slate-500/20 transition-all">Sabotage 50%</button>
+                                                        <div className="flex flex-col gap-1">
+                                                            <button onClick={() => setSabotageMode({amount: 50})} className="px-3 py-1 bg-red-900/40 border border-red-500/30 text-red-400 text-[10px] font-bold rounded hover:bg-red-500 hover:text-white transition-all">Nuke 50</button>
+                                                            <button onClick={() => setSabotageMode({amount: 100})} className="px-3 py-1 bg-red-900/40 border border-red-500/30 text-red-400 text-[10px] font-bold rounded hover:bg-red-500 hover:text-white transition-all">Nuke 100</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
                                 </div>
                             )}
 
@@ -887,13 +1073,21 @@
                                                     {isSpinning ? (
                                                         <Dices size={80} className="text-white animate-spin" />
                                                     ) : spinResult ? (
-                                                        <div className="animate-[task-pop-success_0.5s_ease-out_forwards]">
-                                                            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">YOU WON</p>
-                                                            <h1 className="text-6xl font-black tracking-tighter" style={{ color: spinResult.color, textShadow: `0 0 30px ${spinResult.color}` }}>
-                                                                {spinResult.points}
-                                                            </h1>
-                                                            <p className="text-xl font-bold text-white">POINTS</p>
-                                                        </div>
+                                                        spinResult.isDeadly ? (
+                                                            <div className="animate-[disaster-strike_0.5s_ease-in-out]">
+                                                                <Skull size={80} className="text-red-500 mb-2 mx-auto" />
+                                                                <h1 className="text-4xl font-black tracking-tighter text-red-500">DEADLY RESET</h1>
+                                                                <p className="text-sm font-bold text-red-400">POINTS CLEARED</p>
+                                                            </div>
+                                                        ) : (
+                                                            <div className="animate-[task-pop-success_0.5s_ease-out_forwards]">
+                                                                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">YOU WON</p>
+                                                                <h1 className="text-6xl font-black tracking-tighter" style={{ color: spinResult.color, textShadow: `0 0 30px ${spinResult.color}` }}>
+                                                                    {spinResult.points}
+                                                                </h1>
+                                                                <p className="text-xl font-bold text-white">POINTS</p>
+                                                            </div>
+                                                        )
                                                     ) : (
                                                         <h1 className="text-4xl font-black text-white/20">READY TO ROLL</h1>
                                                     )}
@@ -916,7 +1110,10 @@
                                             <div className="space-y-2 text-xs">
                                                 {GAMBLE_REWARDS.slice().reverse().map((r, i) => (
                                                     <div key={i} className="flex justify-between items-center p-2 rounded-lg hover:bg-white/5 transition-colors">
-                                                        <span className="font-bold" style={{ color: r.color }}>{r.points.toLocaleString()} PTS</span>
+                                                        <span className="font-bold flex items-center gap-2" style={{ color: r.color }}>
+                                                            {r.isDeadly && <Skull size={12}/>}
+                                                            {r.isDeadly ? 'DEADLY RESET' : `${r.points.toLocaleString()} PTS`}
+                                                        </span>
                                                         <span className="text-slate-500 font-mono">{r.chanceLabel}</span>
                                                     </div>
                                                 ))}
