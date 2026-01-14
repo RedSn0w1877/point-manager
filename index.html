@@ -53,54 +53,52 @@
             100% { transform: rotate(360deg); }
         }
 
+        /* RAINBOW TEXT ANIMATION 🌈 */
+        @keyframes rainbow-move {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .rainbow-text {
+            background: linear-gradient(270deg, #ff0000, #ff8800, #ffff00, #00ff00, #0099ff, #6600ff, #ff00ff);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbow-move 4s ease infinite;
+        }
+
         /* --- NEW Rank Up Sequence Animations --- */
-        
-        /* 1. Fade In & Rotate Star */
         @keyframes star-enter {
             0% { opacity: 0; transform: scale(0.5) rotate(-90deg); }
             100% { opacity: 1; transform: scale(1) rotate(0deg); }
         }
-
-        /* 2. Star Float/Idle (NOW WITH MORE SPIN 🌀) */
         @keyframes star-spin-idle {
             0% { transform: rotate(0deg) scale(1); filter: drop-shadow(0 0 20px var(--glow-color)); }
             50% { transform: rotate(180deg) scale(1.1); filter: drop-shadow(0 0 50px var(--glow-color)); }
             100% { transform: rotate(360deg) scale(1); filter: drop-shadow(0 0 20px var(--glow-color)); }
         }
-
-        /* 3. Zoom Out (The Pull Back) */
         @keyframes star-retreat {
             0% { transform: scale(1) rotate(0deg); opacity: 1; }
             100% { transform: scale(0.05) rotate(360deg); opacity: 1; }
         }
-
-        /* 4. Zoom In (The Slam) */
         @keyframes star-slam {
             0% { transform: scale(0.05); opacity: 1; }
-            60% { transform: scale(2.5); opacity: 1; } /* Massive Overshoot */
+            60% { transform: scale(2.5); opacity: 1; }
             100% { transform: scale(1); opacity: 1; }
         }
-
-        /* Particles Sucking In */
         @keyframes implode-particle {
             0% { transform: translate(var(--x), var(--y)) scale(0); opacity: 0; }
             50% { opacity: 1; }
             100% { transform: translate(0, 0) scale(1); opacity: 0; }
         }
-
-        /* Particles Blowing Out */
         @keyframes explode-particle {
             0% { transform: translate(0, 0) scale(0.5); opacity: 1; }
             100% { transform: translate(var(--ex), var(--ey)) scale(0); opacity: 0; }
         }
-
-        /* Edge Glow Pulse */
         @keyframes edge-glow-pulse {
             0% { box-shadow: inset 0 0 0 transparent; }
             100% { box-shadow: inset 0 0 150px var(--glow-color); }
         }
-
-        /* Background Morph */
         @keyframes bg-morph {
             0% { background-color: #000; }
             100% { background-color: rgba(0,0,0,0.9); background-image: radial-gradient(circle at center, var(--new-color) 0%, #000 80%); }
@@ -119,7 +117,6 @@
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 20px rgba(99, 102, 241, 0.2);
             transform: translateY(-4px) scale(1.005);
         }
-        
         .glow-btn {
             transition: all 0.3s;
             position: relative;
@@ -142,7 +139,6 @@
             box-shadow: 0 0 20px currentColor;
             text-shadow: 0 0 8px currentColor;
         }
-        
         .star {
             position: absolute;
             background: white;
@@ -150,7 +146,6 @@
             animation: star-twinkle var(--duration) ease-in-out infinite;
             opacity: 0.6;
         }
-
         .nav-item {
             position: relative;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -167,28 +162,15 @@
         .nav-item:hover::after {
             width: 100%;
         }
-
-        /* Custom Scrollbar for that clean look */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #050508; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #475569; }
-
-        .explosion-ring {
-            animation: shockwave-expand 0.8s ease-out forwards;
-        }
-        .rank-slam {
-            animation: slam-landing 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-        .screen-shake {
-            animation: shake 0.5s ease-in-out;
-        }
-        .debris {
-            animation: debris-fly 1s ease-out forwards;
-        }
-        .rotator {
-            animation: spin-slow 20s linear infinite;
-        }
+        .explosion-ring { animation: shockwave-expand 0.8s ease-out forwards; }
+        .rank-slam { animation: slam-landing 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .screen-shake { animation: shake 0.5s ease-in-out; }
+        .debris { animation: debris-fly 1s ease-out forwards; }
+        .rotator { animation: spin-slow 20s linear infinite; }
     </style>
 </head>
 <body>
@@ -198,7 +180,7 @@
         // --- REACT SETUP ---
         const { useState, useEffect, useRef, useMemo } = React;
         
-        // --- INTERNAL ICON SYSTEM (Flavorful & Reliable) ---
+        // --- INTERNAL ICON SYSTEM ---
         const createIcon = (paths) => ({ size = 24, color = "currentColor", strokeWidth = 2, className = "", ...props }) => (
             <svg 
                 xmlns="http://www.w3.org/2000/svg" 
@@ -217,9 +199,9 @@
             </svg>
         );
 
-        // Icon Definitions (Updated for better tier logic)
+        // Icon Definitions
         const Icons = {
-            PrismLogo: createIcon(["M12 2L2 19h20L12 2zm0 3l6 11H6l6-11z", "M12 22v-4"]), // New App Logo
+            PrismLogo: createIcon(["M12 2L2 19h20L12 2zm0 3l6 11H6l6-11z", "M12 22v-4"]),
             LayoutDashboard: createIcon(["M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z", "M9 22V12h6v10"]),
             Trophy: createIcon(["M6 9H4.5a2.5 2.5 0 0 1 0-5H6", "M18 9h1.5a2.5 2.5 0 0 0 0-5H18", "M4 22h16", "M12 2v7", "M12 17a5 5 0 0 0 5-5V7H7v5a5 5 0 0 0 5 5z"]),
             CheckSquare: createIcon(["M9 11l3 3L22 4", "M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"]),
@@ -238,24 +220,26 @@
             Wallet: createIcon(["M20 7h-3a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3", "M3 17h1v-9a1 1 0 0 1 1-1h13", "M17 11h.01"]),
             Rocket: createIcon(["M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z", "M12 15l-3-3a22 22 0 0 1 2-9.56 1.91 1.91 0 0 1 2.56 2.56A22 22 0 0 1 12 15z", "M5 14l6.34-6.34", "M14 11l2 2", "M9 11l6.4 6.4"]),
             Ghost: createIcon(["M9 22l1-2.5 3 3 3-3 1 2.5V10a8 8 0 0 0-16 0v12l1-2.5 3 3 3-3z"]),
-            // New Tier Icons
             Shield: createIcon(["M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"]),
             Star: createIcon(["M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"]),
             Gem: createIcon(["M6 3h12l4 6-10 13L2 9z"]),
-            FourStar: createIcon(["M12 2 L14.5 9.5 L22 12 L14.5 14.5 L12 22 L9.5 14.5 L2 12 L9.5 9.5 Z"]), // Special Star for Animation
+            FourStar: createIcon(["M12 2 L14.5 9.5 L22 12 L14.5 14.5 L12 22 L9.5 14.5 L2 12 L9.5 9.5 Z"]), 
             Sword: createIcon(["M14.5 17.5L3 6V3h3l11.5 11.5", "M13 19l6-6 5 5v3h-3l-8-2"]),
-            Hexagon: createIcon(["M21 16V8l-9-5-9 5v8l9 5 9-5z"]) // For Carbon Fiber
+            Hexagon: createIcon(["M21 16V8l-9-5-9 5v8l9 5 9-5z"]),
+            Dices: createIcon(["M4 8V6a2 2 0 0 1 2-2h2", "M4 16v2a2 2 0 0 0 2 2h2", "M16 4h2a2 2 0 0 1 2 2v2", "M16 20h2a2 2 0 0 0 2-2v-2", "M10 10h4v4h-4z"]), // Dice icon
+            ToggleLeft: createIcon(["M16 6H8a6 6 0 1 0 0 12h8a6 6 0 0 0 0-12z", "M8 14a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"]),
+            ToggleRight: createIcon(["M16 6H8a6 6 0 1 0 0 12h8a6 6 0 0 0 0-12z", "M16 14a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"])
         };
 
         const { 
             PrismLogo, LayoutDashboard, Trophy, CheckSquare, Book, Plus, Minus, 
             User, Trash2, Zap, Flame, Target, Cpu, Info, X, Rocket,
-            Crown, Wallet, Shield, Star, Gem, FourStar, Sword, Hexagon, Ghost
+            Crown, Wallet, Shield, Star, Gem, FourStar, Sword, Hexagon, Ghost, Dices, ToggleLeft, ToggleRight
         } = Icons;
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'prism-manager-elite';
 
-        // --- CONFIG & TIERS (THE FULL MENU 14-COURSE MEAL 🍽️) ---
+        // --- CONFIG & TIERS ---
         const TIERS = [
             { name: 'Bronze', min: 0, max: 120, value: '$0–$5', color: '#cd7f32', icon: Shield },
             { name: 'Silver', min: 120, max: 300, value: '$5–$20', color: '#cbd5e1', icon: Sword },
@@ -271,6 +255,22 @@
             { name: 'Amethyst', min: 6000, max: 7200, value: '$2000+', color: '#a855f7', icon: Crown },
             { name: 'Ruby', min: 7200, max: 8600, value: '∞', color: '#f43f5e', icon: Flame },
             { name: 'Diamond', min: 8600, max: 1000000, value: '∞', color: '#e0f2fe', icon: FourStar }
+        ];
+
+        // --- GAMBLING REWARDS CONFIG (Rebalanced Weights - Higher Weight = More Common) ---
+        // Weights are relative. Total weight is approx 6000.
+        const GAMBLE_REWARDS = [
+            { points: 1000, weight: 1, chanceLabel: '0.02%', color: '#e0f2fe' },
+            { points: 500, weight: 5, chanceLabel: '0.1%', color: '#f43f5e' },
+            { points: 200, weight: 20, chanceLabel: '0.4%', color: '#a855f7' },
+            { points: 100, weight: 50, chanceLabel: '1%', color: '#3b82f6' },
+            { points: 75, weight: 100, chanceLabel: '2%', color: '#34d399' },
+            { points: 50, weight: 200, chanceLabel: '4%', color: '#475569' },
+            { points: 25, weight: 400, chanceLabel: '8%', color: '#64748b' },
+            { points: 10, weight: 800, chanceLabel: '15%', color: '#818cf8' },
+            { points: 5, weight: 1200, chanceLabel: '20%', color: '#22d3ee' },
+            { points: 2, weight: 1500, chanceLabel: '25%', color: '#94a3b8' },
+            { points: 1, weight: 1800, chanceLabel: '30%', color: '#cd7f32' }
         ];
 
         // --- COMPONENTS ---
@@ -307,35 +307,30 @@
             );
         };
 
-        // --- THE GRAND RANK UP SEQUENCER 🎬 ---
         const RankUpOverlay = ({ newTier, oldTier, onClose }) => {
             const [phase, setPhase] = useState('fade-in'); 
-            // phases: fade-in -> idle (rotating) -> retreat (zoom out) -> slam (explosion) -> settle
 
             useEffect(() => {
-                // The Cinematic Timeline
                 const timers = [
-                    setTimeout(() => setPhase('idle'), 1000),    // 1. Star fades in & rotates
-                    setTimeout(() => setPhase('retreat'), 3500), // 2. Star pulls back, particles suck in
-                    setTimeout(() => setPhase('slam'), 5500),    // 3. Star slams, explodes
-                    setTimeout(() => setPhase('settle'), 6200),  // 4. UI reveals
+                    setTimeout(() => setPhase('idle'), 1000),    
+                    setTimeout(() => setPhase('retreat'), 3500), 
+                    setTimeout(() => setPhase('slam'), 5500),    
+                    setTimeout(() => setPhase('settle'), 6200),  
                 ];
                 return () => timers.forEach(clearTimeout);
             }, []);
 
-            // Particles for the "Implosion" (Sucking in)
             const implosionParticles = useMemo(() => Array.from({ length: 50 }).map((_, i) => {
                 const angle = Math.random() * 360;
-                const dist = 300 + Math.random() * 200; // Start far away
+                const dist = 300 + Math.random() * 200; 
                 const x = Math.cos(angle * Math.PI / 180) * dist;
                 const y = Math.sin(angle * Math.PI / 180) * dist;
                 return { id: i, x: `${x}px`, y: `${y}px`, delay: Math.random() * 1 };
             }), []);
 
-            // Particles for the "Explosion" (Blowing out)
             const explosionParticles = useMemo(() => Array.from({ length: 60 }).map((_, i) => {
                 const angle = Math.random() * 360;
-                const dist = 200 + Math.random() * 300; // End far away
+                const dist = 200 + Math.random() * 300; 
                 const x = Math.cos(angle * Math.PI / 180) * dist;
                 const y = Math.sin(angle * Math.PI / 180) * dist;
                 return { 
@@ -356,7 +351,6 @@
                         animation: phase === 'slam' ? 'bg-morph 1s forwards' : 'none'
                     }}
                 >
-                    {/* Stage 1 & 2: The Old Star (Guide) */}
                     {phase !== 'settle' && (
                         <div className="absolute inset-0 flex items-center justify-center pointer-events-none transition-all duration-1000"
                              style={{ 
@@ -364,19 +358,17 @@
                                             phase === 'retreat' ? 'edge-glow-pulse 0.5s infinite' : 'none' 
                              }}>
                             
-                            {/* The 4-Sided Star */}
                             <div style={{
                                 color: currentColor,
                                 transition: 'color 1s ease',
                                 animation: phase === 'fade-in' ? 'star-enter 1s ease-out forwards' : 
-                                           phase === 'idle' ? 'star-spin-idle 3s linear infinite' : // SPINNING! 🌀
+                                           phase === 'idle' ? 'star-spin-idle 3s linear infinite' : 
                                            phase === 'retreat' ? 'star-retreat 2s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards' : 
                                            phase === 'slam' ? 'star-slam 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards' : 'none'
                             }}>
                                 <FourStar size={200} fill="currentColor" strokeWidth={0} />
                             </div>
 
-                            {/* Implosion Particles (Only during retreat) */}
                             {phase === 'retreat' && implosionParticles.map(p => (
                                 <div key={p.id} className="absolute bg-white rounded-full w-1 h-1"
                                      style={{ 
@@ -389,7 +381,6 @@
                         </div>
                     )}
 
-                    {/* Stage 3: The Explosion */}
                     {(phase === 'slam' || phase === 'settle') && (
                         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                             {explosionParticles.map(p => (
@@ -404,11 +395,9 @@
                         </div>
                     )}
 
-                    {/* Stage 4: The Reveal */}
                     <div 
                         className={`flex flex-col items-center relative z-50 transition-all duration-1000 ${phase === 'settle' ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-90 pointer-events-none'}`}
                     >
-                        {/* Huge Glow */}
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-10 blur-3xl transform rotate-45 scale-150 pointer-events-none"></div>
                         
                         <div className="w-48 h-48 rounded-3xl flex items-center justify-center mb-8 relative glass-card border-2" 
@@ -417,7 +406,6 @@
                             <newTier.icon size={84} style={{ color: newTier.color, filter: `drop-shadow(0 0 20px ${newTier.color})` }} />
                         </div>
                         
-                        {/* NO ITALICS HERE */}
                         <h2 className="text-xl uppercase tracking-[0.5em] text-white/70 mb-2 font-black">Rank Attained</h2>
                         <h1 className="text-7xl font-black text-white mb-12 tracking-tighter uppercase" 
                                 style={{ 
@@ -441,12 +429,11 @@
             );
         };
 
-        const UserCard = ({ user, onDelete, onUpdatePoints }) => {
+        const UserCard = ({ user, onUpdatePoints }) => {
             const [amount, setAmount] = useState('');
-            const tier = TIERS.find(t => user.points >= t.min && user.points < t.max) || TIERS[0];
+            const tier = TIERS.find(t => user.points >= t.min && user.points < t.max) || TIERS[TIERS.length - 1];
             const nextTier = TIERS[TIERS.indexOf(tier) + 1];
             const progress = nextTier ? ((user.points - tier.min) / (nextTier.min - tier.min)) * 100 : 100;
-            
             const RankIcon = tier.icon;
 
             const handleCustom = (mult) => {
@@ -459,7 +446,6 @@
 
             return (
                 <div className="glass-card p-6 rounded-3xl relative overflow-hidden group border-l-4" style={{ borderLeftColor: tier.color }}>
-                    {/* Background Icon Watermark - NOW WITH SPIN! 🌀 */}
                     <div className={`absolute -top-4 -right-4 p-6 opacity-10 group-hover:opacity-30 group-hover:scale-110 transition-all duration-500 blur-[2px] rotator`} style={{ color: tier.color }}>
                         <RankIcon size={120} />
                     </div>
@@ -474,7 +460,7 @@
                                     </span>
                                 </div>
                             </div>
-                            <button onClick={() => onDelete(user.id)} className="text-slate-600 hover:text-red-500 transition-colors bg-black/40 hover:bg-black/60 p-2 rounded-xl border border-white/5"><Trash2 size={16} /></button>
+                            <button onClick={() => onUpdatePoints(user.id, 'DELETE')} className="text-slate-600 hover:text-red-500 transition-colors bg-black/40 hover:bg-black/60 p-2 rounded-xl border border-white/5"><Trash2 size={16} /></button>
                         </div>
 
                         <div className="mb-6">
@@ -527,52 +513,65 @@
 
         const App = () => {
             const [view, setView] = useState('dash');
-            const [users, setUsers] = useState(() => JSON.parse(localStorage.getItem('prism_v3_users')) || [{ id: 1, name: 'Commander', points: 0 }]);
-            const [tasks, setTasks] = useState(() => JSON.parse(localStorage.getItem('prism_v3_tasks')) || []);
-            const [journal, setJournal] = useState(() => localStorage.getItem('prism_v3_journal') || '');
-            const [rankUpData, setRankUpData] = useState(null); // stores { newTier, oldTier }
+            const [users, setUsers] = useState(() => JSON.parse(localStorage.getItem('prism_v4_users')) || [{ id: 1, name: 'Hoa', points: 0 }]);
+            const [tasks, setTasks] = useState(() => JSON.parse(localStorage.getItem('prism_v4_tasks')) || []);
+            const [journal, setJournal] = useState(() => localStorage.getItem('prism_v4_journal') || '');
+            const [rankUpData, setRankUpData] = useState(null);
             const [showLegend, setShowLegend] = useState(false);
             const [energy, setEnergy] = useState(100);
             const [newUserName, setNewUserName] = useState('');
             const [animatingTaskIds, setAnimatingTaskIds] = useState([]);
             
-            const prevRanks = useRef({});
+            // Gambling State
+            const [isTaxFree, setIsTaxFree] = useState(false);
+            const [spinResult, setSpinResult] = useState(null);
+            const [isSpinning, setIsSpinning] = useState(false);
+            const [selectedGambler, setSelectedGambler] = useState('');
 
-            useEffect(() => {
-                localStorage.setItem('prism_v3_users', JSON.stringify(users));
-                
-                users.forEach(u => {
-                    const currentTier = TIERS.find(t => u.points >= t.min && u.points < t.max) || TIERS[0];
-                    const prevRankName = prevRanks.current[u.id];
-                    
-                    if (prevRankName && prevRankName !== currentTier.name) {
-                        // Found a rank up!
-                        const oldTier = TIERS.find(t => t.name === prevRankName) || TIERS[0];
-                        setRankUpData({ newTier: currentTier, oldTier: oldTier });
-                    }
-                    prevRanks.current[u.id] = currentTier.name;
-                });
-            }, [users]);
-
-            useEffect(() => localStorage.setItem('prism_v3_tasks', JSON.stringify(tasks)), [tasks]);
-            useEffect(() => localStorage.setItem('prism_v3_journal', journal), [journal]);
+            // Save users, tasks, journal
+            useEffect(() => localStorage.setItem('prism_v4_users', JSON.stringify(users)), [users]);
+            useEffect(() => localStorage.setItem('prism_v4_tasks', JSON.stringify(tasks)), [tasks]);
+            useEffect(() => localStorage.setItem('prism_v4_journal', journal), [journal]);
             useEffect(() => {
                 const i = setInterval(() => setEnergy(p => p > 90 ? 100 : p + 0.1), 1000);
                 return () => clearInterval(i);
             }, []);
 
-            const addPoints = (uid, amt) => {
-                setUsers(prev => prev.map(u => u.id === uid ? { ...u, points: Math.max(0, u.points + amt) } : u));
+            // Core Logic for adding points and handling Rank Ups
+            const updatePoints = (uid, amountOrAction, showAnimation = false) => {
+                if (amountOrAction === 'DELETE') {
+                    setUsers(prev => prev.filter(u => u.id !== uid));
+                    return;
+                }
+
+                const amt = Number(amountOrAction);
+                setUsers(prevUsers => {
+                    return prevUsers.map(u => {
+                        if (u.id === uid) {
+                            const oldPoints = u.points;
+                            const newPoints = Math.max(0, oldPoints + amt);
+                            
+                            // Check for Rank Up ONLY if animation is requested
+                            if (showAnimation && newPoints > oldPoints) {
+                                const oldTier = TIERS.find(t => oldPoints >= t.min && oldPoints < t.max) || TIERS[TIERS.length - 1];
+                                const newTier = TIERS.find(t => newPoints >= t.min && newPoints < t.max) || TIERS[TIERS.length - 1];
+                                
+                                // Only trigger if index increased
+                                if (TIERS.indexOf(newTier) > TIERS.indexOf(oldTier)) {
+                                    setRankUpData({ newTier, oldTier });
+                                }
+                            }
+                            return { ...u, points: newPoints };
+                        }
+                        return u;
+                    });
+                });
             };
 
             const handleAddUser = () => {
                 if (!newUserName.trim()) return;
                 setUsers([...users, { id: Date.now(), name: newUserName, points: 0 }]);
                 setNewUserName('');
-            };
-
-            const deleteUser = (id) => {
-                setUsers(users.filter(u => u.id !== id));
             };
 
             const addTask = (text, reward, uid) => {
@@ -585,13 +584,55 @@
                 setTimeout(() => {
                     setTasks(prev => prev.map(t => {
                         if (t.id === tid && !t.done) {
-                            addPoints(t.uid, t.reward);
+                            // No animation for quest completion
+                            updatePoints(t.uid, t.reward, false); 
                             return { ...t, done: true };
                         }
                         return t;
                     }));
                     setAnimatingTaskIds(prev => prev.filter(id => id !== tid));
                 }, 600);
+            };
+
+            const handleSpin = () => {
+                if (!selectedGambler) {
+                    alert("Select a user to spin!");
+                    return;
+                }
+                const user = users.find(u => u.id === Number(selectedGambler));
+                if (!user) return;
+
+                const cost = isTaxFree ? 0 : 25;
+                if (user.points < cost) {
+                    alert("Insufficient funds for entry fee!");
+                    return;
+                }
+
+                setIsSpinning(true);
+                setSpinResult(null);
+                
+                // Deduct cost immediately (No animation)
+                updatePoints(user.id, -cost, false);
+
+                // Simulate spin delay
+                setTimeout(() => {
+                    const totalWeight = GAMBLE_REWARDS.reduce((acc, item) => acc + item.weight, 0);
+                    let random = Math.random() * totalWeight;
+                    let wonItem = GAMBLE_REWARDS[GAMBLE_REWARDS.length - 1];
+
+                    for (let item of GAMBLE_REWARDS) {
+                        if (random < item.weight) {
+                            wonItem = item;
+                            break;
+                        }
+                        random -= item.weight;
+                    }
+
+                    // Add winnings (No animation)
+                    updatePoints(user.id, wonItem.points, false);
+                    setSpinResult(wonItem);
+                    setIsSpinning(false);
+                }, 1500);
             };
 
             return (
@@ -614,6 +655,7 @@
                                 { id: 'dash', label: 'Launchpad', icon: LayoutDashboard },
                                 { id: 'users', label: 'Squad', icon: User },
                                 { id: 'quests', label: 'Missions', icon: CheckSquare },
+                                { id: 'gamble', label: 'Gambling', icon: Dices },
                                 { id: 'journal', label: 'Database', icon: Book }
                             ].map(item => (
                                 <button 
@@ -646,7 +688,7 @@
                                     <div className="flex flex-col md:flex-row justify-between items-end gap-6">
                                         <div>
                                             <h1 className="text-6xl font-black text-white mb-2 tracking-tighter drop-shadow-[0_0_25px_rgba(255,255,255,0.2)]">
-                                                Welcome, <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">Commander.</span>
+                                                Welcome, <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">Hoa.</span>
                                             </h1>
                                             <p className="text-slate-400 font-medium text-lg">Prism protocols initialized. Ready for command.</p>
                                         </div>
@@ -687,7 +729,7 @@
                                 <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
                                     <div className="flex flex-col md:flex-row justify-between items-center gap-6 border-b border-white/10 pb-8">
                                         <div>
-                                            <h2 className="text-4xl font-black text-white tracking-tighter">Squad Roster</h2>
+                                            <h2 className="text-4xl font-black text-white tracking-tighter rainbow-text">Squad Roster</h2>
                                             <p className="text-sm text-slate-400 mt-2 font-medium">Manage personnel & allocate resources</p>
                                         </div>
                                         <div className="flex gap-3">
@@ -722,7 +764,7 @@
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                         {users.length === 0 && <p className="text-slate-500 italic col-span-3 text-center py-20 font-medium">No personnel found. Recruit a member to begin.</p>}
                                         {users.map(u => (
-                                            <UserCard key={u.id} user={u} onDelete={deleteUser} onUpdatePoints={addPoints} />
+                                            <UserCard key={u.id} user={u} onUpdatePoints={(uid, amt) => updatePoints(uid, amt, true)} />
                                         ))}
                                     </div>
                                 </div>
@@ -799,6 +841,87 @@
                                                 </div>
                                             );
                                         })}
+                                    </div>
+                                </div>
+                            )}
+
+                            {view === 'gamble' && (
+                                <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
+                                    <div className="flex justify-between items-center border-b border-white/10 pb-8">
+                                        <div>
+                                            <h2 className="text-4xl font-black text-white tracking-tighter">The Casino</h2>
+                                            <p className="text-sm text-slate-400 mt-2 font-medium">Test your luck. Win big.</p>
+                                        </div>
+                                        <div 
+                                            onClick={() => setIsTaxFree(!isTaxFree)}
+                                            className={`cursor-pointer px-4 py-2 rounded-xl border flex items-center gap-2 transition-all ${isTaxFree ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.3)]' : 'bg-rose-500/20 border-rose-500/50 text-rose-400'}`}
+                                        >
+                                            {isTaxFree ? <ToggleRight size={20} /> : <ToggleLeft size={20} />}
+                                            <span className="text-xs font-bold uppercase">{isTaxFree ? 'Tax Free Mode' : 'Entry Fee: 25 PTS'}</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex flex-col lg:flex-row gap-8">
+                                        {/* SPIN AREA */}
+                                        <div className="flex-1 glass-card p-8 rounded-3xl border-indigo-500/20 flex flex-col items-center justify-center min-h-[400px] relative overflow-hidden">
+                                            {/* Glow FX */}
+                                            <div className="absolute inset-0 bg-indigo-500/10 blur-3xl rounded-full scale-150 animate-pulse"></div>
+                                            
+                                            <div className="relative z-10 w-full max-w-sm space-y-8 text-center">
+                                                <div className="space-y-2">
+                                                    <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Select Operator</label>
+                                                    <div className="relative">
+                                                        <select 
+                                                            value={selectedGambler}
+                                                            onChange={(e) => setSelectedGambler(e.target.value)}
+                                                            className="w-full bg-black/40 border border-white/10 rounded-xl px-5 py-4 text-sm text-white outline-none focus:border-indigo-500 transition-all appearance-none font-bold cursor-pointer"
+                                                        >
+                                                            <option value="">-- Choose User --</option>
+                                                            {users.map(u => <option key={u.id} value={u.id}>{u.name} ({u.points.toLocaleString()} pts)</option>)}
+                                                        </select>
+                                                        <User className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" size={16} />
+                                                    </div>
+                                                </div>
+
+                                                <div className="h-32 flex items-center justify-center">
+                                                    {isSpinning ? (
+                                                        <Dices size={80} className="text-white animate-spin" />
+                                                    ) : spinResult ? (
+                                                        <div className="animate-[task-pop-success_0.5s_ease-out_forwards]">
+                                                            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">YOU WON</p>
+                                                            <h1 className="text-6xl font-black tracking-tighter" style={{ color: spinResult.color, textShadow: `0 0 30px ${spinResult.color}` }}>
+                                                                {spinResult.points}
+                                                            </h1>
+                                                            <p className="text-xl font-bold text-white">POINTS</p>
+                                                        </div>
+                                                    ) : (
+                                                        <h1 className="text-4xl font-black text-white/20">READY TO ROLL</h1>
+                                                    )}
+                                                </div>
+
+                                                <button 
+                                                    onClick={handleSpin}
+                                                    disabled={isSpinning}
+                                                    className="w-full py-5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-black text-xl rounded-2xl shadow-[0_0_30px_rgba(192,38,211,0.4)] hover:shadow-[0_0_50px_rgba(192,38,211,0.6)] transition-all transform hover:-translate-y-1 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                >
+                                                    {isSpinning ? 'SPINNING...' : 'SPIN'}
+                                                </button>
+                                                {!isTaxFree && <p className="text-[10px] text-slate-500 font-bold uppercase">Cost: 25 Points</p>}
+                                            </div>
+                                        </div>
+
+                                        {/* LOOT TABLE */}
+                                        <div className="w-full lg:w-80 glass-card p-6 rounded-3xl border-white/5 h-fit">
+                                            <h3 className="text-sm font-black text-white uppercase tracking-widest mb-4 border-b border-white/10 pb-2">Reward Rates</h3>
+                                            <div className="space-y-2 text-xs">
+                                                {GAMBLE_REWARDS.slice().reverse().map((r, i) => (
+                                                    <div key={i} className="flex justify-between items-center p-2 rounded-lg hover:bg-white/5 transition-colors">
+                                                        <span className="font-bold" style={{ color: r.color }}>{r.points.toLocaleString()} PTS</span>
+                                                        <span className="text-slate-500 font-mono">{r.chanceLabel}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             )}
