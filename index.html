@@ -48,34 +48,62 @@
             100% { width: 100%; }
         }
 
-        /* --- Rank Up Animations (THE BOOM 💥) --- */
-        @keyframes shockwave-expand {
-            0% { transform: scale(0); opacity: 1; border-width: 50px; }
-            100% { transform: scale(4); opacity: 0; border-width: 0px; }
+        @keyframes spin-slow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
+
+        /* --- NEW Rank Up Sequence Animations --- */
         
-        @keyframes slam-landing {
-            0% { transform: scale(3); opacity: 0; }
+        /* 1. Fade In & Rotate Star */
+        @keyframes star-enter {
+            0% { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+            100% { opacity: 1; transform: scale(1) rotate(0deg); }
+        }
+
+        /* 2. Star Float/Idle (NOW WITH MORE SPIN 🌀) */
+        @keyframes star-spin-idle {
+            0% { transform: rotate(0deg) scale(1); filter: drop-shadow(0 0 20px var(--glow-color)); }
+            50% { transform: rotate(180deg) scale(1.1); filter: drop-shadow(0 0 50px var(--glow-color)); }
+            100% { transform: rotate(360deg) scale(1); filter: drop-shadow(0 0 20px var(--glow-color)); }
+        }
+
+        /* 3. Zoom Out (The Pull Back) */
+        @keyframes star-retreat {
+            0% { transform: scale(1) rotate(0deg); opacity: 1; }
+            100% { transform: scale(0.05) rotate(360deg); opacity: 1; }
+        }
+
+        /* 4. Zoom In (The Slam) */
+        @keyframes star-slam {
+            0% { transform: scale(0.05); opacity: 1; }
+            60% { transform: scale(2.5); opacity: 1; } /* Massive Overshoot */
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Particles Sucking In */
+        @keyframes implode-particle {
+            0% { transform: translate(var(--x), var(--y)) scale(0); opacity: 0; }
             50% { opacity: 1; }
-            70% { transform: scale(0.9); }
-            85% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        
-        @keyframes debris-fly {
-            0% { transform: translate(0,0) scale(1) rotate(0deg); opacity: 1; }
-            100% { transform: translate(var(--tx), var(--ty)) scale(0) rotate(var(--rot)); opacity: 0; }
+            100% { transform: translate(0, 0) scale(1); opacity: 0; }
         }
 
-        @keyframes shake {
-            0%, 100% { transform: translate(0, 0); }
-            10%, 30%, 50%, 70%, 90% { transform: translate(-4px, -4px); }
-            20%, 40%, 60%, 80% { transform: translate(4px, 4px); }
+        /* Particles Blowing Out */
+        @keyframes explode-particle {
+            0% { transform: translate(0, 0) scale(0.5); opacity: 1; }
+            100% { transform: translate(var(--ex), var(--ey)) scale(0); opacity: 0; }
         }
 
-        @keyframes glow-pulse {
-            0%, 100% { box-shadow: 0 0 20px var(--glow-color); }
-            50% { box-shadow: 0 0 50px var(--glow-color); }
+        /* Edge Glow Pulse */
+        @keyframes edge-glow-pulse {
+            0% { box-shadow: inset 0 0 0 transparent; }
+            100% { box-shadow: inset 0 0 150px var(--glow-color); }
+        }
+
+        /* Background Morph */
+        @keyframes bg-morph {
+            0% { background-color: #000; }
+            100% { background-color: rgba(0,0,0,0.9); background-image: radial-gradient(circle at center, var(--new-color) 0%, #000 80%); }
         }
 
         /* --- UI Utilities --- */
@@ -158,6 +186,9 @@
         .debris {
             animation: debris-fly 1s ease-out forwards;
         }
+        .rotator {
+            animation: spin-slow 20s linear infinite;
+        }
     </style>
 </head>
 <body>
@@ -167,8 +198,7 @@
         // --- REACT SETUP ---
         const { useState, useEffect, useRef, useMemo } = React;
         
-        // --- INTERNAL ICON SYSTEM (Robust, no dependencies) ---
-        // Creates a simple SVG icon component from path data
+        // --- INTERNAL ICON SYSTEM (Flavorful & Reliable) ---
         const createIcon = (paths) => ({ size = 24, color = "currentColor", strokeWidth = 2, className = "", ...props }) => (
             <svg 
                 xmlns="http://www.w3.org/2000/svg" 
@@ -187,9 +217,10 @@
             </svg>
         );
 
-        // Icon Definitions (Lucide Equivalent)
+        // Icon Definitions (Updated for better tier logic)
         const Icons = {
-            LayoutDashboard: createIcon(["M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z", "M9 22V12h6v10"]), // actually Home/Dashboard mix, simple dash icon
+            PrismLogo: createIcon(["M12 2L2 19h20L12 2zm0 3l6 11H6l6-11z", "M12 22v-4"]), // New App Logo
+            LayoutDashboard: createIcon(["M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z", "M9 22V12h6v10"]),
             Trophy: createIcon(["M6 9H4.5a2.5 2.5 0 0 1 0-5H6", "M18 9h1.5a2.5 2.5 0 0 0 0-5H18", "M4 22h16", "M12 2v7", "M12 17a5 5 0 0 0 5-5V7H7v5a5 5 0 0 0 5 5z"]),
             CheckSquare: createIcon(["M9 11l3 3L22 4", "M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"]),
             Book: createIcon(["M4 19.5A2.5 2.5 0 0 1 6.5 17H20", "M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"]),
@@ -199,32 +230,35 @@
             Trash2: createIcon(["M3 6h18", "M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6", "M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2", "M10 11v6", "M14 11v6"]),
             Zap: createIcon(["M13 2L3 14h9l-1 8 10-12h-9l1-8z"]),
             Flame: createIcon(["M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.1.2-2.2.6-3.3.7 1.1 1.9 2.2 2.9 2.8z"]),
-            Target: createIcon(["M22 12h-4", "M6 12H2", "M12 6V2", "M12 22v-4", "M12 18a6 6 0 1 1 0-12 6 6 0 0 1 0 12z", "M12 15a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"]), // Crosshair style
-            Cpu: createIcon(["M15 9h-6v6h6V9z", "M9 9V3M15 9V3M9 15v6M15 15v6M3 9h6M3 15h6M21 9h-6M21 15h-6"]), // Chip
+            Target: createIcon(["M22 12h-4", "M6 12H2", "M12 6V2", "M12 22v-4", "M12 18a6 6 0 1 1 0-12 6 6 0 0 1 0 12z", "M12 15a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"]),
+            Cpu: createIcon(["M15 9h-6v6h6V9z", "M9 9V3M15 9V3M9 15v6M15 15v6M3 9h6M3 15h6M21 9h-6M21 15h-6"]),
             Info: createIcon(["M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z", "M12 16v-4", "M12 8h.01"]),
             X: createIcon(["M18 6L6 18", "M6 6l12 12"]),
-            Rocket: createIcon(["M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z", "M12 15l-3-3a22 22 0 0 1 2-9.56 1.91 1.91 0 0 1 2.56 2.56A22 22 0 0 1 12 15z", "M5 14l6.34-6.34", "M14 11l2 2", "M9 11l6.4 6.4"]),
-            Ghost: createIcon(["M9 22l1-2.5 3 3 3-3 1 2.5V10a8 8 0 0 0-16 0v12l1-2.5 3 3 3-3z"]),
-            Swords: createIcon(["M14.5 17.5L3 6V3h3l11.5 11.5", "M13 19l6-6 5 5v3h-3l-8-2"]),
             Crown: createIcon(["M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"]),
-            Wallet: createIcon(["M20 7h-3a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3", "M3 17h1v-9a1 1 0 0 1 1-1h13", "M17 11h.01"])
+            Wallet: createIcon(["M20 7h-3a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3", "M3 17h1v-9a1 1 0 0 1 1-1h13", "M17 11h.01"]),
+            // New Tier Icons
+            Shield: createIcon(["M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"]),
+            Star: createIcon(["M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"]),
+            Gem: createIcon(["M6 3h12l4 6-10 13L2 9z"]),
+            FourStar: createIcon(["M12 2 L14.5 9.5 L22 12 L14.5 14.5 L12 22 L9.5 14.5 L2 12 L9.5 9.5 Z"]), // Special Star for Animation
+            Sword: createIcon(["M14.5 17.5L3 6V3h3l11.5 11.5", "M13 19l6-6 5 5v3h-3l-8-2"]) // Better sword
         };
 
         const { 
-            LayoutDashboard, Trophy, CheckSquare, Book, Plus, Minus, 
-            User, Trash2, Zap, Flame, Target, Cpu, Info, X, Rocket, 
-            Ghost, Swords, Crown, Wallet 
+            PrismLogo, LayoutDashboard, Trophy, CheckSquare, Book, Plus, Minus, 
+            User, Trash2, Zap, Flame, Target, Cpu, Info, X, 
+            Crown, Wallet, Shield, Star, Gem, FourStar, Sword
         } = Icons;
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'prism-manager-elite';
 
-        // --- CONFIG & TIERS (EXTRA SPICY 🌶️) ---
+        // --- CONFIG & TIERS (REMASTERED ICONS 💎) ---
         const TIERS = [
-            { name: 'Bronze', min: 0, max: 200, value: '$0 - $5', color: '#f97316', secondary: '#c2410c', icon: Ghost },
-            { name: 'Silver', min: 200, max: 500, value: '$5 - $20', color: '#cbd5e1', secondary: '#475569', icon: Swords },
-            { name: 'Gold', min: 500, max: 1000, value: '$20 - $50', color: '#fbbf24', secondary: '#b45309', icon: Trophy },
+            { name: 'Bronze', min: 0, max: 200, value: '$0 - $5', color: '#f97316', secondary: '#c2410c', icon: Shield },
+            { name: 'Silver', min: 200, max: 500, value: '$5 - $20', color: '#94a3b8', secondary: '#475569', icon: Sword },
+            { name: 'Gold', min: 500, max: 1000, value: '$20 - $50', color: '#fbbf24', secondary: '#b45309', icon: Star },
             { name: 'Platinum', min: 1000, max: 2500, value: '$50 - $100', color: '#22d3ee', secondary: '#0e7490', icon: Zap },
-            { name: 'Diamond', min: 2500, max: 5000, value: '$100 - $200', color: '#a78bfa', secondary: '#5b21b6', icon: Flame },
+            { name: 'Diamond', min: 2500, max: 5000, value: '$100 - $200', color: '#a78bfa', secondary: '#5b21b6', icon: Gem },
             { name: 'Apex', min: 5000, max: 1000000, value: '$200+', color: '#f43f5e', secondary: '#881337', icon: Crown }
         ];
 
@@ -256,116 +290,142 @@
                             }} 
                         />
                     ))}
-                    {/* Dynamic Background Gradient */}
                     <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/30 via-purple-900/10 to-pink-900/30 animate-[float-bg_15s_ease_infinite] bg-[length:400%_400%]"></div>
                     <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-overlay"></div>
                 </div>
             );
         };
 
-        // --- RANK UP SYSTEM (EXPLOSIVE!) ---
-        const RankUpOverlay = ({ tier, onClose }) => {
-            const [phase, setPhase] = useState('charge'); // charge -> boom -> slam -> settle
+        // --- THE GRAND RANK UP SEQUENCER 🎬 ---
+        const RankUpOverlay = ({ newTier, oldTier, onClose }) => {
+            const [phase, setPhase] = useState('fade-in'); 
+            // phases: fade-in -> idle (rotating) -> retreat (zoom out) -> slam (explosion) -> settle
 
             useEffect(() => {
-                // Timing the sequence
+                // The Cinematic Timeline
                 const timers = [
-                    setTimeout(() => setPhase('boom'), 1000), // Explosion
-                    setTimeout(() => setPhase('slam'), 1400), // Icon Slams in
-                    setTimeout(() => setPhase('settle'), 2000), // UI fades in
+                    setTimeout(() => setPhase('idle'), 1000),    // 1. Star fades in & rotates
+                    setTimeout(() => setPhase('retreat'), 3500), // 2. Star pulls back, particles suck in
+                    setTimeout(() => setPhase('slam'), 5500),    // 3. Star slams, explodes
+                    setTimeout(() => setPhase('settle'), 6200),  // 4. UI reveals
                 ];
                 return () => timers.forEach(clearTimeout);
             }, []);
 
-            // Generate debris particles for the explosion
-            const debris = useMemo(() => Array.from({ length: 40 }).map((_, i) => {
+            // Particles for the "Implosion" (Sucking in)
+            const implosionParticles = useMemo(() => Array.from({ length: 50 }).map((_, i) => {
                 const angle = Math.random() * 360;
-                const distance = 200 + Math.random() * 300;
-                const tx = Math.cos(angle * Math.PI / 180) * distance;
-                const ty = Math.sin(angle * Math.PI / 180) * distance;
-                return {
-                    id: i,
-                    tx: `${tx}px`,
-                    ty: `${ty}px`,
-                    rot: `${Math.random() * 720}deg`,
-                    color: Math.random() > 0.5 ? tier.color : '#fff',
-                    size: Math.random() * 8 + 4,
-                    delay: Math.random() * 0.2
+                const dist = 300 + Math.random() * 200; // Start far away
+                const x = Math.cos(angle * Math.PI / 180) * dist;
+                const y = Math.sin(angle * Math.PI / 180) * dist;
+                return { id: i, x: `${x}px`, y: `${y}px`, delay: Math.random() * 1 };
+            }), []);
+
+            // Particles for the "Explosion" (Blowing out)
+            const explosionParticles = useMemo(() => Array.from({ length: 60 }).map((_, i) => {
+                const angle = Math.random() * 360;
+                const dist = 200 + Math.random() * 300; // End far away
+                const x = Math.cos(angle * Math.PI / 180) * dist;
+                const y = Math.sin(angle * Math.PI / 180) * dist;
+                return { 
+                    id: i, ex: `${x}px`, ey: `${y}px`, 
+                    color: Math.random() > 0.5 ? newTier.color : '#fff',
+                    size: Math.random() * 6 + 2 
                 };
-            }), [tier]);
-            
-            // Fallback for icon
-            const RankIcon = tier.icon || User;
+            }), [newTier]);
+
+            const currentColor = phase === 'settle' || phase === 'slam' ? newTier.color : (oldTier?.color || '#fff');
 
             return (
                 <div 
-                    className={`fixed inset-0 z-[200] flex items-center justify-center bg-black/90 transition-all duration-500 ${phase === 'boom' ? 'screen-shake' : ''}`}
-                    style={{ '--glow-color': tier.color }}
+                    className="fixed inset-0 z-[200] flex items-center justify-center bg-black transition-all duration-[2000ms]"
+                    style={{ 
+                        '--glow-color': currentColor,
+                        '--new-color': newTier.color,
+                        animation: phase === 'slam' ? 'bg-morph 1s forwards' : 'none'
+                    }}
                 >
-                    {/* 1. Charging Phase */}
-                    {phase === 'charge' && (
-                        <div className="relative">
-                            <div className="w-20 h-20 rounded-full bg-white animate-ping opacity-75"></div>
-                            <div className="absolute inset-0 w-20 h-20 rounded-full border-4 border-white animate-spin"></div>
-                        </div>
-                    )}
-
-                    {/* 2. Explosion Phase (Replaces Oval Rings) */}
-                    {(phase === 'boom' || phase === 'slam' || phase === 'settle') && (
-                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                            {/* Shockwaves */}
-                            <div className="absolute w-40 h-40 rounded-full border-white explosion-ring opacity-0" style={{ borderColor: tier.color }}></div>
-                            <div className="absolute w-40 h-40 rounded-full border-white explosion-ring opacity-0" style={{ borderColor: 'white', animationDelay: '0.1s' }}></div>
+                    {/* Stage 1 & 2: The Old Star (Guide) */}
+                    {phase !== 'settle' && (
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none transition-all duration-1000"
+                             style={{ 
+                                 animation: phase === 'idle' ? 'edge-glow-pulse 2s infinite' : 
+                                            phase === 'retreat' ? 'edge-glow-pulse 0.5s infinite' : 'none' 
+                             }}>
                             
-                            {/* Debris */}
-                            {debris.map(d => (
-                                <div 
-                                    key={d.id} 
-                                    className="absolute debris rounded-sm"
-                                    style={{
-                                        width: d.size,
-                                        height: d.size,
-                                        backgroundColor: d.color,
-                                        '--tx': d.tx,
-                                        '--ty': d.ty,
-                                        '--rot': d.rot,
-                                        animationDelay: `${d.delay}s`
-                                    }}
+                            {/* The 4-Sided Star */}
+                            <div style={{
+                                color: currentColor,
+                                transition: 'color 1s ease',
+                                animation: phase === 'fade-in' ? 'star-enter 1s ease-out forwards' : 
+                                           phase === 'idle' ? 'star-spin-idle 3s linear infinite' : // SPINNING! 🌀
+                                           phase === 'retreat' ? 'star-retreat 2s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards' : 
+                                           phase === 'slam' ? 'star-slam 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards' : 'none'
+                            }}>
+                                <FourStar size={200} fill="currentColor" strokeWidth={0} />
+                            </div>
+
+                            {/* Implosion Particles (Only during retreat) */}
+                            {phase === 'retreat' && implosionParticles.map(p => (
+                                <div key={p.id} className="absolute bg-white rounded-full w-1 h-1"
+                                     style={{ 
+                                         animation: `implode-particle 1.5s ease-in forwards`,
+                                         animationDelay: `${p.delay}s`,
+                                         '--x': p.x, '--y': p.y
+                                     }} 
                                 />
                             ))}
                         </div>
                     )}
 
-                    {/* 3. The Slam Landing */}
+                    {/* Stage 3: The Explosion */}
                     {(phase === 'slam' || phase === 'settle') && (
-                        <div className="flex flex-col items-center rank-slam relative z-10">
-                            {/* Massive Glow behind */}
-                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-20 blur-3xl transform rotate-45 scale-150"></div>
-                            
-                            <div className="w-48 h-48 rounded-3xl flex items-center justify-center mb-8 relative glass-card border-2" style={{ borderColor: tier.color, boxShadow: `0 0 100px ${tier.color}40` }}>
-                                <div className="absolute inset-0 blur-xl opacity-50 rounded-3xl animate-[glow-pulse_2s_infinite]" style={{ backgroundColor: tier.color }}></div>
-                                <RankIcon size={84} style={{ color: tier.color, filter: `drop-shadow(0 0 10px ${tier.color})` }} />
-                            </div>
-                            
-                            <h2 className="text-xl uppercase tracking-[0.5em] text-white/70 mb-2 font-black">Rank Up</h2>
-                            <h1 className="text-7xl font-black text-white mb-12 tracking-tighter uppercase italic" 
-                                    style={{ 
-                                        textShadow: `0 0 40px ${tier.color}, 4px 4px 0px ${tier.secondary}`,
-                                        WebkitTextStroke: '2px rgba(255,255,255,0.1)'
-                                    }}>
-                                {tier.name}
-                            </h1>
-
-                            <div className={`transition-all duration-1000 ${phase === 'settle' ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-                                <button 
-                                    onClick={onClose}
-                                    className="px-12 py-4 bg-white text-black text-lg font-black rounded-full hover:scale-105 active:scale-95 transition-all shadow-[0_0_50px_rgba(255,255,255,0.3)] hover:shadow-[0_0_80px_rgba(255,255,255,0.6)]"
-                                >
-                                    LET'S GO
-                                </button>
-                            </div>
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                            {explosionParticles.map(p => (
+                                <div key={p.id} className="absolute rounded-full"
+                                     style={{ 
+                                         width: p.size, height: p.size, backgroundColor: p.color,
+                                         animation: `explode-particle 1s ease-out forwards`,
+                                         '--ex': p.ex, '--ey': p.ey
+                                     }} 
+                                />
+                            ))}
                         </div>
                     )}
+
+                    {/* Stage 4: The Reveal */}
+                    <div 
+                        className={`flex flex-col items-center relative z-50 transition-all duration-1000 ${phase === 'settle' ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-90 pointer-events-none'}`}
+                    >
+                        {/* Huge Glow */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-10 blur-3xl transform rotate-45 scale-150 pointer-events-none"></div>
+                        
+                        <div className="w-48 h-48 rounded-3xl flex items-center justify-center mb-8 relative glass-card border-2" 
+                             style={{ borderColor: newTier.color, boxShadow: `0 0 100px ${newTier.color}40` }}>
+                            <div className="absolute inset-0 blur-xl opacity-50 rounded-3xl animate-[glow-pulse_2s_infinite]" style={{ backgroundColor: newTier.color }}></div>
+                            <newTier.icon size={84} style={{ color: newTier.color, filter: `drop-shadow(0 0 20px ${newTier.color})` }} />
+                        </div>
+                        
+                        {/* NO ITALICS HERE */}
+                        <h2 className="text-xl uppercase tracking-[0.5em] text-white/70 mb-2 font-black">Rank Attained</h2>
+                        <h1 className="text-7xl font-black text-white mb-12 tracking-tighter uppercase" 
+                                style={{ 
+                                    textShadow: `0 0 50px ${newTier.color}`,
+                                    WebkitTextStroke: '2px rgba(255,255,255,0.1)'
+                                }}>
+                            {newTier.name}
+                        </h1>
+
+                        <button 
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onClose();
+                            }}
+                            className="px-12 py-4 bg-white text-black text-lg font-black rounded-full hover:scale-105 active:scale-95 transition-all shadow-[0_0_50px_rgba(255,255,255,0.3)] hover:shadow-[0_0_80px_rgba(255,255,255,0.6)] cursor-pointer z-50 relative"
+                        >
+                            LET'S GO
+                        </button>
+                    </div>
                 </div>
             );
         };
@@ -376,9 +436,7 @@
             const nextTier = TIERS[TIERS.indexOf(tier) + 1];
             const progress = nextTier ? ((user.points - tier.min) / (nextTier.min - tier.min)) * 100 : 100;
             
-            // Fallback for icon
-            const RankIcon = tier.icon || User;
-            const WalletIcon = Wallet || Info;
+            const RankIcon = tier.icon;
 
             const handleCustom = (mult) => {
                 const val = parseInt(amount);
@@ -390,8 +448,8 @@
 
             return (
                 <div className="glass-card p-6 rounded-3xl relative overflow-hidden group border-l-4" style={{ borderLeftColor: tier.color }}>
-                    {/* Background Icon Watermark */}
-                    <div className={`absolute -top-4 -right-4 p-6 opacity-10 group-hover:opacity-30 group-hover:scale-110 transition-all duration-500 blur-[2px]`} style={{ color: tier.color }}>
+                    {/* Background Icon Watermark - NOW WITH SPIN! 🌀 */}
+                    <div className={`absolute -top-4 -right-4 p-6 opacity-10 group-hover:opacity-30 group-hover:scale-110 transition-all duration-500 blur-[2px] rotator`} style={{ color: tier.color }}>
                         <RankIcon size={120} />
                     </div>
                     
@@ -413,7 +471,7 @@
                                 <div>
                                     <p className="text-4xl font-black text-white font-mono tracking-tighter" style={{ textShadow: `0 0 20px ${tier.color}40` }}>{user.points.toLocaleString()}</p>
                                     <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1 flex items-center gap-1">
-                                        <WalletIcon size={10} /> {tier.value} Yield
+                                        <Wallet size={10} /> {tier.value} Yield
                                     </p>
                                 </div>
                                 <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
@@ -435,13 +493,10 @@
                         </div>
 
                         <div className="flex flex-col gap-3">
-                            {/* Quick Actions */}
                             <div className="flex gap-2">
                                 <button onClick={() => onUpdatePoints(user.id, 100)} className="flex-1 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 py-3 rounded-xl text-xs font-black transition-all glow-btn uppercase tracking-wider flex justify-center items-center gap-1"><Plus size={12}/> 100</button>
                                 <button onClick={() => onUpdatePoints(user.id, -100)} className="flex-1 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 py-3 rounded-xl text-xs font-black transition-all glow-btn uppercase tracking-wider flex justify-center items-center gap-1"><Minus size={12}/> 100</button>
                             </div>
-                            
-                            {/* Custom Input */}
                             <div className="flex gap-2 items-center bg-black/40 p-1 rounded-xl border border-white/5">
                                 <input 
                                     type="number" 
@@ -459,31 +514,30 @@
             );
         };
 
-        // --- MAIN APP ---
         const App = () => {
             const [view, setView] = useState('dash');
             const [users, setUsers] = useState(() => JSON.parse(localStorage.getItem('prism_v3_users')) || [{ id: 1, name: 'Commander', points: 0 }]);
             const [tasks, setTasks] = useState(() => JSON.parse(localStorage.getItem('prism_v3_tasks')) || []);
             const [journal, setJournal] = useState(() => localStorage.getItem('prism_v3_journal') || '');
-            const [rankUpData, setRankUpData] = useState(null);
+            const [rankUpData, setRankUpData] = useState(null); // stores { newTier, oldTier }
             const [showLegend, setShowLegend] = useState(false);
             const [energy, setEnergy] = useState(100);
-            
-            // New state for adding users directly
             const [newUserName, setNewUserName] = useState('');
-            
-            // Animation state for quests
             const [animatingTaskIds, setAnimatingTaskIds] = useState([]);
             
             const prevRanks = useRef({});
 
-            // Persistence
             useEffect(() => {
                 localStorage.setItem('prism_v3_users', JSON.stringify(users));
+                
                 users.forEach(u => {
                     const currentTier = TIERS.find(t => u.points >= t.min && u.points < t.max) || TIERS[0];
-                    if (prevRanks.current[u.id] && prevRanks.current[u.id] !== currentTier.name) {
-                        setRankUpData(currentTier);
+                    const prevRankName = prevRanks.current[u.id];
+                    
+                    if (prevRankName && prevRankName !== currentTier.name) {
+                        // Found a rank up!
+                        const oldTier = TIERS.find(t => t.name === prevRankName) || TIERS[0];
+                        setRankUpData({ newTier: currentTier, oldTier: oldTier });
                     }
                     prevRanks.current[u.id] = currentTier.name;
                 });
@@ -491,8 +545,6 @@
 
             useEffect(() => localStorage.setItem('prism_v3_tasks', JSON.stringify(tasks)), [tasks]);
             useEffect(() => localStorage.setItem('prism_v3_journal', journal), [journal]);
-            
-            // Energy simulation
             useEffect(() => {
                 const i = setInterval(() => setEnergy(p => p > 90 ? 100 : p + 0.1), 1000);
                 return () => clearInterval(i);
@@ -518,10 +570,7 @@
             };
 
             const handleCompleteTask = (tid) => {
-                // 1. Trigger Animation
                 setAnimatingTaskIds(prev => [...prev, tid]);
-
-                // 2. Wait for animation, then update state
                 setTimeout(() => {
                     setTasks(prev => prev.map(t => {
                         if (t.id === tid && !t.done) {
@@ -530,20 +579,18 @@
                         }
                         return t;
                     }));
-                    // Remove from animating list
                     setAnimatingTaskIds(prev => prev.filter(id => id !== tid));
-                }, 600); // Matches CSS animation duration
+                }, 600);
             };
 
             return (
                 <div className="flex h-screen w-full bg-[#050508] text-slate-200 font-sans relative overflow-hidden">
                     <Starfield />
 
-                    {/* Sidebar */}
                     <nav className="w-20 md:w-72 border-r border-white/5 flex flex-col items-center md:items-stretch p-6 z-20 bg-[#0a0a0f]/60 backdrop-blur-2xl">
                         <div className="flex items-center gap-4 mb-12 px-2 mt-2 group cursor-pointer">
                             <div className="w-12 h-12 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center text-white shadow-[0_0_25px_rgba(79,70,229,0.5)] group-hover:scale-110 transition-transform duration-300 group-hover:rotate-12">
-                                <Rocket size={24} fill="currentColor" />
+                                <PrismLogo size={24} fill="currentColor" />
                             </div>
                             <div className="hidden md:block">
                                 <h1 className="font-black text-2xl text-white tracking-tighter group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-indigo-400 group-hover:to-purple-400 transition-all">PRISM</h1>
@@ -581,14 +628,10 @@
                         </div>
                     </nav>
 
-                    {/* Main Content */}
                     <main className="flex-1 overflow-y-auto relative z-10 no-scrollbar">
                         <div className="p-6 md:p-12 max-w-7xl mx-auto space-y-12 pb-32">
-                            
-                            {/* VIEW: LAUNCHPAD */}
                             {view === 'dash' && (
                                 <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                                    {/* Header */}
                                     <div className="flex flex-col md:flex-row justify-between items-end gap-6">
                                         <div>
                                             <h1 className="text-6xl font-black text-white mb-2 tracking-tighter drop-shadow-[0_0_25px_rgba(255,255,255,0.2)]">
@@ -606,7 +649,6 @@
                                         </div>
                                     </div>
 
-                                    {/* KPI Cards */}
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                         <div className="glass-card p-8 rounded-3xl relative overflow-hidden group border-indigo-500/30 hover:border-indigo-500/60">
                                             <div className="absolute -right-10 -top-10 bg-indigo-500/20 w-48 h-48 rounded-full blur-3xl group-hover:bg-indigo-500/30 transition-all duration-500"></div>
@@ -630,7 +672,6 @@
                                 </div>
                             )}
 
-                            {/* VIEW: MEMBERS */}
                             {view === 'users' && (
                                 <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
                                     <div className="flex flex-col md:flex-row justify-between items-center gap-6 border-b border-white/10 pb-8">
@@ -648,7 +689,6 @@
                                         </div>
                                     </div>
 
-                                    {/* New Add User Input Section */}
                                     <div className="glass-card p-4 rounded-2xl border-indigo-500/20 flex flex-col md:flex-row gap-4 items-center">
                                         <div className="flex-1 w-full relative">
                                             <User className="absolute left-4 top-1/2 -translate-y-1/2 text-indigo-400" size={18} />
@@ -677,7 +717,6 @@
                                 </div>
                             )}
 
-                            {/* VIEW: QUESTS */}
                             {view === 'quests' && (
                                 <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
                                     <div className="border-b border-white/10 pb-8">
@@ -753,7 +792,6 @@
                                 </div>
                             )}
 
-                            {/* VIEW: LOGS */}
                             {view === 'journal' && (
                                 <div className="h-full flex flex-col space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
                                     <div className="border-b border-white/10 pb-8">
@@ -778,7 +816,6 @@
                         </div>
                     </main>
 
-                    {/* LEGEND MODAL */}
                     {showLegend && (
                         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-xl p-4 animate-in fade-in duration-300" onClick={() => setShowLegend(false)}>
                             <div className="glass-card w-full max-w-2xl rounded-3xl overflow-hidden shadow-2xl scale-100 border-white/10" onClick={e => e.stopPropagation()}>
@@ -808,13 +845,11 @@
                         </div>
                     )}
 
-                    {/* RANK UP OVERLAY */}
-                    {rankUpData && <RankUpOverlay tier={rankUpData} onClose={() => setRankUpData(null)} />}
+                    {rankUpData && <RankUpOverlay newTier={rankUpData.newTier} oldTier={rankUpData.oldTier} onClose={() => setRankUpData(null)} />}
                 </div>
             );
         }
 
-        // --- RENDER APP ---
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
     </script>
