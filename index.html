@@ -280,19 +280,21 @@
         ];
 
         // --- GAMBLING REWARDS CONFIG ---
+        // Weights are vastly spread out to ensure rarity
+        // Total approx: 7000+
         const GAMBLE_REWARDS = [
-            { points: 1000, weight: 1, chanceLabel: '0.02%', color: '#e0f2fe' },
-            { points: 500, weight: 5, chanceLabel: '0.1%', color: '#f43f5e' },
-            { points: 200, weight: 20, chanceLabel: '0.4%', color: '#a855f7' },
-            { points: 100, weight: 50, chanceLabel: '1%', color: '#3b82f6' },
-            { points: 75, weight: 100, chanceLabel: '2%', color: '#34d399' },
-            { points: 50, weight: 200, chanceLabel: '4%', color: '#475569' },
-            { points: 25, weight: 400, chanceLabel: '8%', color: '#64748b' },
-            { points: 10, weight: 800, chanceLabel: '15%', color: '#818cf8' },
-            { points: 5, weight: 1200, chanceLabel: '20%', color: '#22d3ee' },
-            { points: 2, weight: 1500, chanceLabel: '25%', color: '#94a3b8' },
-            { points: 1, weight: 1800, chanceLabel: '30%', color: '#cd7f32' },
-            { isDeadly: true, weight: 30, chanceLabel: '0.5%', color: '#ff0000', name: "DEADLY RESET" } // 0.5% approx relative to total ~6000
+            { points: 1000, weight: 0.5, chanceLabel: '0.01%', color: '#e0f2fe' },
+            { points: 500, weight: 2, chanceLabel: '0.03%', color: '#f43f5e' },
+            { points: 200, weight: 10, chanceLabel: '0.1%', color: '#a855f7' },
+            { points: 100, weight: 25, chanceLabel: '0.3%', color: '#3b82f6' },
+            { points: 75, weight: 60, chanceLabel: '0.8%', color: '#34d399' },
+            { points: 50, weight: 150, chanceLabel: '2%', color: '#475569' },
+            { points: 25, weight: 350, chanceLabel: '5%', color: '#64748b' },
+            { points: 10, weight: 800, chanceLabel: '11%', color: '#818cf8' },
+            { points: 5, weight: 1500, chanceLabel: '21%', color: '#22d3ee' },
+            { points: 2, weight: 2500, chanceLabel: '35%', color: '#94a3b8' },
+            { points: 1, weight: 3500, chanceLabel: '49%', color: '#cd7f32' },
+            { isDeadly: true, weight: 35, chanceLabel: '0.5%', color: '#ff0000', name: "DEADLY RESET" }
         ];
 
         const BOOSTERS = {
@@ -551,7 +553,7 @@
 
         const App = () => {
             const [view, setView] = useState('dash');
-            const [users, setUsers] = useState(() => JSON.parse(localStorage.getItem('prism_v5_users')) || [{ id: 1, name: 'Director Hoa', points: 0, boosters: [] }]);
+            const [users, setUsers] = useState(() => JSON.parse(localStorage.getItem('prism_v5_users')) || [{ id: 1, name: 'Hoa', points: 0, boosters: [] }]);
             const [tasks, setTasks] = useState(() => JSON.parse(localStorage.getItem('prism_v5_tasks')) || []);
             const [journal, setJournal] = useState(() => localStorage.getItem('prism_v5_journal') || '');
             const [rankUpData, setRankUpData] = useState(null);
@@ -569,7 +571,7 @@
             // Admin State
             const [adminUnlocked, setAdminUnlocked] = useState(false);
             const [adminPass, setAdminPass] = useState('');
-            const [sabotageMode, setSabotageMode] = useState(null); // { amount: 50, sourceUser: 'Director' }
+            const [sabotageMode, setSabotageMode] = useState(null); 
 
             const prevRanks = useRef({});
 
@@ -578,9 +580,6 @@
                 users.forEach(u => {
                     const currentTier = TIERS.find(t => u.points >= t.min && u.points < t.max) || TIERS[TIERS.length - 1];
                     const prevRankName = prevRanks.current[u.id];
-                    
-                    // Only animate if WE (admin) manually caused it via updatePoints with showAnimation=true
-                    // This effect just syncs refs, the actual trigger is in updatePoints
                     prevRanks.current[u.id] = currentTier.name;
                 });
             }, [users]);
@@ -598,7 +597,6 @@
                     return;
                 }
 
-                // If setting directly (e.g. reset), treat as is.
                 if (amountOrAction === 'RESET') {
                      setUsers(prev => prev.map(u => u.id === uid ? { ...u, points: 0 } : u));
                      return;
@@ -643,9 +641,6 @@
                         const current = u.boosters || [];
                         const exists = current.includes(boosterId);
                         let newBoosters = exists ? current.filter(b => b !== boosterId) : [...current, boosterId];
-                        
-                        // Enforce logic: can't have 2x and 4x same time usually, but let's allow overlapping chaos for fun unless requested otherwise.
-                        // Or maybe simplistic: toggle.
                         return { ...u, boosters: newBoosters };
                     }
                     return u;
@@ -654,7 +649,7 @@
 
             const handleSabotage = (targetId) => {
                 if (!sabotageMode) return;
-                updatePoints(targetId, -sabotageMode.amount, false); // Sabotage is silent ranking wise
+                updatePoints(targetId, -sabotageMode.amount, false); 
                 setSabotageMode(null);
                 alert(`Sabotage successful! ${sabotageMode.amount} points removed.`);
             };
@@ -684,6 +679,17 @@
                 }, 600);
             };
 
+            // ---- NEW GAMBLING LOGIC WITH "ADVANTAGE" SYSTEM ----
+            const getRandomReward = () => {
+                const totalWeight = GAMBLE_REWARDS.reduce((acc, item) => acc + item.weight, 0);
+                let random = Math.random() * totalWeight;
+                for (let item of GAMBLE_REWARDS) {
+                    if (random < item.weight) return item;
+                    random -= item.weight;
+                }
+                return GAMBLE_REWARDS[GAMBLE_REWARDS.length - 1];
+            };
+
             const handleSpin = () => {
                 if (!selectedGambler) {
                     alert("Select a user to spin!");
@@ -701,29 +707,50 @@
                 setIsSpinning(true);
                 setSpinResult(null);
                 
-                updatePoints(user.id, -cost, false); // Pay entry fee
+                updatePoints(user.id, -cost, false); // Pay entry fee (silent)
 
                 setTimeout(() => {
-                    const totalWeight = GAMBLE_REWARDS.reduce((acc, item) => acc + item.weight, 0);
-                    let random = Math.random() * totalWeight;
-                    let wonItem = GAMBLE_REWARDS[GAMBLE_REWARDS.length - 1];
+                    const boosters = user.boosters || [];
+                    
+                    // Determine number of rolls based on Boosters
+                    let rolls = 1;
+                    if (boosters.includes('4X')) rolls = 4;
+                    else if (boosters.includes('2X')) rolls = 2;
+                    else if (boosters.includes('HALF')) rolls = 2; // Half is also 2, but we pick WORST
 
-                    for (let item of GAMBLE_REWARDS) {
-                        if (random < item.weight) {
-                            wonItem = item;
-                            break;
-                        }
-                        random -= item.weight;
+                    const results = [];
+                    for(let k=0; k<rolls; k++) {
+                        results.push(getRandomReward());
                     }
 
-                    if (wonItem.isDeadly) {
+                    // Pick Winner
+                    let finalReward;
+                    if (boosters.includes('HALF')) {
+                        // Sabotage: Pick WORST (Min points, or Deadly Reset if available)
+                        // Priority of badness: Deadly Reset > Lowest Points
+                        const deadly = results.find(r => r.isDeadly);
+                        if (deadly) finalReward = deadly;
+                        else finalReward = results.reduce((prev, curr) => prev.points < curr.points ? prev : curr);
+                    } else {
+                        // Boost/Normal: Pick BEST (Max points, Avoid Deadly Reset if possible)
+                        // Priority of goodness: Max Points > Deadly Reset (only if forced)
+                        const safeResults = results.filter(r => !r.isDeadly);
+                        if (safeResults.length > 0) {
+                            finalReward = safeResults.reduce((prev, curr) => prev.points > curr.points ? prev : curr);
+                        } else {
+                            // All rolls were deadly reset (unlucky!)
+                            finalReward = results[0];
+                        }
+                    }
+
+                    if (finalReward.isDeadly) {
                         updatePoints(user.id, 'RESET', false);
                     } else {
-                        // Boosters apply inside updatePoints
-                        updatePoints(user.id, wonItem.points, false);
+                        // Boosters multiply payout amount in updatePoints
+                        updatePoints(user.id, finalReward.points, false);
                     }
                     
-                    setSpinResult(wonItem);
+                    setSpinResult(finalReward);
                     setIsSpinning(false);
                 }, 1500);
             };
@@ -806,7 +833,7 @@
                                     <div className="flex flex-col md:flex-row justify-between items-end gap-6">
                                         <div>
                                             <h1 className="text-6xl font-black text-white mb-2 tracking-tighter drop-shadow-[0_0_25px_rgba(255,255,255,0.2)]">
-                                                Welcome, <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">Director Hoa.</span>
+                                                Welcome, <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">Hoa.</span>
                                             </h1>
                                             <p className="text-slate-400 font-medium text-lg">Prism protocols initialized. Ready for command.</p>
                                         </div>
