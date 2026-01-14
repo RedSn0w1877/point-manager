@@ -236,30 +236,41 @@
             X: createIcon(["M18 6L6 18", "M6 6l12 12"]),
             Crown: createIcon(["M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"]),
             Wallet: createIcon(["M20 7h-3a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3", "M3 17h1v-9a1 1 0 0 1 1-1h13", "M17 11h.01"]),
+            Rocket: createIcon(["M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z", "M12 15l-3-3a22 22 0 0 1 2-9.56 1.91 1.91 0 0 1 2.56 2.56A22 22 0 0 1 12 15z", "M5 14l6.34-6.34", "M14 11l2 2", "M9 11l6.4 6.4"]),
+            Ghost: createIcon(["M9 22l1-2.5 3 3 3-3 1 2.5V10a8 8 0 0 0-16 0v12l1-2.5 3 3 3-3z"]),
             // New Tier Icons
             Shield: createIcon(["M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"]),
             Star: createIcon(["M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"]),
             Gem: createIcon(["M6 3h12l4 6-10 13L2 9z"]),
             FourStar: createIcon(["M12 2 L14.5 9.5 L22 12 L14.5 14.5 L12 22 L9.5 14.5 L2 12 L9.5 9.5 Z"]), // Special Star for Animation
-            Sword: createIcon(["M14.5 17.5L3 6V3h3l11.5 11.5", "M13 19l6-6 5 5v3h-3l-8-2"]) // Better sword
+            Sword: createIcon(["M14.5 17.5L3 6V3h3l11.5 11.5", "M13 19l6-6 5 5v3h-3l-8-2"]),
+            Hexagon: createIcon(["M21 16V8l-9-5-9 5v8l9 5 9-5z"]) // For Carbon Fiber
         };
 
         const { 
             PrismLogo, LayoutDashboard, Trophy, CheckSquare, Book, Plus, Minus, 
-            User, Trash2, Zap, Flame, Target, Cpu, Info, X, 
-            Crown, Wallet, Shield, Star, Gem, FourStar, Sword
+            User, Trash2, Zap, Flame, Target, Cpu, Info, X, Rocket,
+            Crown, Wallet, Shield, Star, Gem, FourStar, Sword, Hexagon, Ghost
         } = Icons;
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'prism-manager-elite';
 
-        // --- CONFIG & TIERS (REMASTERED ICONS 💎) ---
+        // --- CONFIG & TIERS (THE FULL MENU 14-COURSE MEAL 🍽️) ---
         const TIERS = [
-            { name: 'Bronze', min: 0, max: 200, value: '$0 - $5', color: '#f97316', secondary: '#c2410c', icon: Shield },
-            { name: 'Silver', min: 200, max: 500, value: '$5 - $20', color: '#94a3b8', secondary: '#475569', icon: Sword },
-            { name: 'Gold', min: 500, max: 1000, value: '$20 - $50', color: '#fbbf24', secondary: '#b45309', icon: Star },
-            { name: 'Platinum', min: 1000, max: 2500, value: '$50 - $100', color: '#22d3ee', secondary: '#0e7490', icon: Zap },
-            { name: 'Diamond', min: 2500, max: 5000, value: '$100 - $200', color: '#a78bfa', secondary: '#5b21b6', icon: Gem },
-            { name: 'Apex', min: 5000, max: 1000000, value: '$200+', color: '#f43f5e', secondary: '#881337', icon: Crown }
+            { name: 'Bronze', min: 0, max: 120, value: '$0–$5', color: '#cd7f32', icon: Shield },
+            { name: 'Silver', min: 120, max: 300, value: '$5–$20', color: '#cbd5e1', icon: Sword },
+            { name: 'Gold', min: 300, max: 600, value: '$20–$50', color: '#fbbf24', icon: Trophy },
+            { name: 'Platinum', min: 600, max: 950, value: '$50–$100', color: '#e2e8f0', icon: Star },
+            { name: 'Titanium', min: 950, max: 1400, value: '$100–$200', color: '#94a3b8', icon: Cpu },
+            { name: 'Palladium', min: 1400, max: 1900, value: '$200–$350', color: '#22d3ee', icon: Zap },
+            { name: 'Iridium', min: 1900, max: 2500, value: '$350–$600', color: '#818cf8', icon: Rocket },
+            { name: 'Obsidian', min: 2500, max: 3200, value: '$600–$900', color: '#64748b', icon: Ghost },
+            { name: 'Carbon Fiber', min: 3200, max: 4000, value: '$900–$1200', color: '#475569', icon: Hexagon },
+            { name: 'Emerald', min: 4000, max: 4900, value: '$1200–$1500', color: '#34d399', icon: Gem },
+            { name: 'Sapphire', min: 4900, max: 6000, value: '$1500–$2000', color: '#3b82f6', icon: Gem },
+            { name: 'Amethyst', min: 6000, max: 7200, value: '$2000+', color: '#a855f7', icon: Crown },
+            { name: 'Ruby', min: 7200, max: 8600, value: '∞', color: '#f43f5e', icon: Flame },
+            { name: 'Diamond', min: 8600, max: 1000000, value: '∞', color: '#e0f2fe', icon: FourStar }
         ];
 
         // --- COMPONENTS ---
@@ -823,7 +834,7 @@
                                     <h3 className="text-2xl font-black text-white tracking-tight">Clearance Levels</h3>
                                     <button onClick={() => setShowLegend(false)} className="bg-white/10 p-2 rounded-full hover:bg-white/20 transition-all"><X size={20} className="text-white" /></button>
                                 </div>
-                                <div className="p-8 space-y-4">
+                                <div className="p-8 space-y-4 max-h-[60vh] overflow-y-auto no-scrollbar">
                                     {TIERS.map(t => (
                                         <div key={t.name} className="flex items-center justify-between p-4 rounded-2xl bg-black/40 border border-white/5 hover:border-white/20 transition-all group">
                                             <div className="flex items-center gap-5">
