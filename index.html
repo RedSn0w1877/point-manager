@@ -67,7 +67,7 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* RAINBOW TEXT ANIMATION 🌈 */
+        /* RAINBOW TEXT ANIMATION SIGMA SIGMA 6767 🌈 */
         @keyframes rainbow-move {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
@@ -81,7 +81,7 @@
             animation: rainbow-move 4s ease infinite;
         }
 
-        /* --- NEW Rank Up Sequence Animations --- */
+        /* --- bad animations --- */
         @keyframes star-enter {
             0% { opacity: 0; transform: scale(0.5) rotate(-90deg); }
             100% { opacity: 1; transform: scale(1) rotate(0deg); }
@@ -275,8 +275,8 @@
             { name: 'Emerald', min: 4000, max: 4900, value: '$1200–$1500', color: '#34d399', icon: Gem },
             { name: 'Sapphire', min: 4900, max: 6000, value: '$1500–$2000', color: '#3b82f6', icon: Gem },
             { name: 'Amethyst', min: 6000, max: 7200, value: '$2000+', color: '#a855f7', icon: Crown },
-            { name: 'Ruby', min: 7200, max: 8600, value: '∞', color: '#f43f5e', icon: Flame },
-            { name: 'Diamond', min: 8600, max: 1000000, value: '∞', color: '#e0f2fe', icon: FourStar }
+            { name: 'Ruby', min: 7200, max: 8600, value: '$2000+', color: '#f43f5e', icon: Flame },
+            { name: 'Diamond', min: 8600, max: 1000000, value: '$2000+', color: '#e0f2fe', icon: FourStar }
         ];
 
         // --- GAMBLING REWARDS CONFIG ---
@@ -284,7 +284,7 @@
         // Total approx: 7000+
         const GAMBLE_REWARDS = [
             { points: 1000, weight: 0.5, chanceLabel: '0.01%', color: '#e0f2fe' },
-            { points: 500, weight: 2, chanceLabel: '0.03%', color: '#f43f5e' },
+            { points: 500, weight: 2, chanceLabel: '0.05%', color: '#f43f5e' },
             { points: 200, weight: 10, chanceLabel: '0.1%', color: '#a855f7' },
             { points: 100, weight: 25, chanceLabel: '0.3%', color: '#3b82f6' },
             { points: 75, weight: 60, chanceLabel: '0.8%', color: '#34d399' },
@@ -294,7 +294,7 @@
             { points: 5, weight: 1500, chanceLabel: '21%', color: '#22d3ee' },
             { points: 2, weight: 2500, chanceLabel: '35%', color: '#94a3b8' },
             { points: 1, weight: 3500, chanceLabel: '49%', color: '#cd7f32' },
-            { isDeadly: true, weight: 35, chanceLabel: '0.5%', color: '#ff0000', name: "DEADLY RESET" }
+            { isDeadly: true, weight: 35, chanceLabel: '0.5%', color: '#ff0000', name: "DEADLY LUCK" }
         ];
 
         const BOOSTERS = {
@@ -452,7 +452,7 @@
                             }}
                             className="px-12 py-4 bg-white text-black text-lg font-black rounded-full hover:scale-105 active:scale-95 transition-all shadow-[0_0_50px_rgba(255,255,255,0.3)] hover:shadow-[0_0_80px_rgba(255,255,255,0.6)] cursor-pointer z-50 relative"
                         >
-                            LET'S GO
+                            SO SIGMA 67
                         </button>
                     </div>
                 </div>
@@ -679,7 +679,7 @@
                 }, 600);
             };
 
-            // ---- NEW GAMBLING LOGIC WITH "ADVANTAGE" SYSTEM ----
+            // ---- NEW GAMBLING LOGIC WITH THE NEW LUCK SYSTEM ----
             const getRandomReward = () => {
                 const totalWeight = GAMBLE_REWARDS.reduce((acc, item) => acc + item.weight, 0);
                 let random = Math.random() * totalWeight;
@@ -692,7 +692,7 @@
 
             const handleSpin = () => {
                 if (!selectedGambler) {
-                    alert("Select a user to spin!");
+                    alert("brotato chip you need to pick someone to gamble");
                     return;
                 }
                 const user = users.find(u => u.id === Number(selectedGambler));
@@ -700,7 +700,7 @@
 
                 const cost = isTaxFree ? 0 : 25;
                 if (user.points < cost) {
-                    alert("Insufficient funds for entry fee!");
+                    alert("you're too broke");
                     return;
                 }
 
@@ -876,9 +876,9 @@
                                         <div>
                                             <h2 className="text-4xl font-black text-white tracking-tighter flex items-center gap-3">
                                                 <Lock size={32} className="text-red-500" />
-                                                RESTRICTED AREA
+                                                dont click pls
                                             </h2>
-                                            <p className="text-sm text-slate-400 mt-2 font-medium">Director Level Clearance Only</p>
+                                            <p className="text-sm text-slate-400 mt-2 font-medium">what are you doing here</p>
                                         </div>
                                     </div>
 
@@ -895,7 +895,7 @@
                                                 <button 
                                                     onClick={() => {
                                                         if (adminPass === 'hehehehoa') setAdminUnlocked(true);
-                                                        else alert("ACCESS DENIED");
+                                                        else alert("okay buddy get outta here");
                                                     }}
                                                     className="w-full py-4 bg-red-600 hover:bg-red-500 text-white font-black rounded-xl shadow-[0_0_20px_rgba(220,38,38,0.4)] transition-all"
                                                 >
@@ -962,7 +962,7 @@
                                                 value={newUserName} 
                                                 onChange={(e) => setNewUserName(e.target.value)}
                                                 onKeyDown={(e) => e.key === 'Enter' && handleAddUser()}
-                                                placeholder="New Recruit Name..." 
+                                                placeholder="New person Name..." 
                                                 className="w-full bg-black/40 border border-white/10 rounded-xl pl-12 pr-4 py-4 text-sm text-white outline-none focus:border-indigo-500 focus:shadow-[0_0_15px_rgba(99,102,241,0.3)] transition-all font-bold placeholder-slate-600" 
                                             />
                                         </div>
@@ -1012,7 +1012,7 @@
                                             }}
                                             className="w-full py-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-black rounded-xl shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_40px_rgba(79,70,229,0.5)] transition-all transform hover:-translate-y-1 uppercase tracking-widest"
                                         >
-                                            Deploy Mission
+                                            Launch Task
                                         </button>
                                     </div>
 
